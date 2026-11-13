@@ -10,3 +10,8 @@ Tips:
 - Delete a file to go back to the built-in drawing for that tutor.
 - These files are NOT uploaded to GitHub (see .gitignore): artwork stays on your computer.
 - Only use artwork you have permission to use, and credit the creator in your project report.
+
+PUPPET MODE (smoothest, hands visible):
+  Put the full-body artwork cut into pieces in a folder named after the tutor, for example static/characters/yuri/
+  with body.png, armL.png, armR.png, head.png, full.png (all the same size) and a rig.json that lists them
+  with their pivot points. The pieces move separately: bounce, nodding head, waving arms, breathing.

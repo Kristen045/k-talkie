@@ -1,4 +1,5 @@
 """The URLs of the app. Pages (HTML) and the API (JSON the browser asks for)."""
+import json
 import re
 
 from fastapi import APIRouter, HTTPException, Request
@@ -18,10 +19,35 @@ router = APIRouter()
 CHAR_DIR = Path(__file__).resolve().parent.parent / "static" / "characters"
 
 
+def _custom_rigs() -> dict:
+    """A 'puppet' = artwork cut into pieces (body, arms, head) that move separately.
+    Lives in static/characters/<tutor>/rig.json (see static/characters/README.txt)."""
+    rigs = {}
+    for key in TUTORS:
+        f = CHAR_DIR / key / "rig.json"
+        if not f.exists():
+            continue
+        try:
+            d = json.loads(f.read_text(encoding="utf-8"))
+            w, h = d["size"]
+            rigs[key] = {
+                "ratio": f"{w} / {h}",
+                "thumb": f"/static/characters/{key}/{d.get('thumb', 'full.png')}",
+                "layers": [{"name": l["name"], "src": f"/static/characters/{key}/{l['src']}",
+                            "origin": (f"{l['pivot'][0] / w * 100:.2f}% {l['pivot'][1] / h * 100:.2f}%"
+                                       if "pivot" in l else "50% 100%")} for l in d["layers"]],
+            }
+        except (ValueError, KeyError, OSError):
+            continue
+    return rigs
+
+
 def _custom_imgs() -> dict:
     """If you drop yuri.png / joohyuk.png into static/characters/, those images replace the drawn faces."""
-    found = {}
+    found = {k: r["thumb"] for k, r in _custom_rigs().items()}
     for key in TUTORS:
+        if key in found:
+            continue
         for ext in ("png", "webp", "jpg", "jpeg", "svg"):
             if (CHAR_DIR / f"{key}.{ext}").exists():
                 found[key] = f"/static/characters/{key}.{ext}"
@@ -45,7 +71,7 @@ def chat_page(request: Request, conv_id: int):
     conv = _get_conversation(conv_id)
     return templates.TemplateResponse(request, "chat.html", {
         "conv": conv, "tutor": TUTORS[conv["tutor"]], "modes": MODES, "live": ai.is_live(),
-        "img": _custom_imgs().get(conv["tutor"])})
+        "img": _custom_imgs().get(conv["tutor"]), "rig": _custom_rigs().get(conv["tutor"])})
 
 
 @router.get("/history", response_class=HTMLResponse)

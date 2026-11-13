@@ -15,7 +15,13 @@
       <div class="chip name-chip"><strong>{{ tutor.name_ko }}</strong> {{ tutor.name_en }} · <span id="mode-label"></span></div>
       <div class="chip state-chip" id="state">Tap Talk to start</div>
       <div class="think" aria-hidden="true"><i></i><i></i><i></i></div>
+      {% if rig %}
+      <div class="face-wrap has-rig" id="face"><div class="shadow"></div>
+        <div class="puppet" style="aspect-ratio: {{ rig.ratio }}">{% for l in rig.layers %}<img class="layer" data-name="{{ l.name }}" src="{{ l.src }}" alt="" style="transform-origin: {{ l.origin }}">{% endfor %}</div>
+      </div>
+      {% else %}
       <div class="face-wrap{% if img %} has-img{% endif %}" id="face">{% if img %}<img class="face-img" src="{{ img }}" alt="{{ tutor.name_en }}">{% else %}{{ face(conv.tutor) }}{% endif %}</div>
+      {% endif %}
       <div class="subtitle">
         <canvas id="wave" class="wave" width="320" height="34" aria-hidden="true"></canvas>
         <div id="cap-ko" class="cap-ko"></div>

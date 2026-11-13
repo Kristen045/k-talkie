@@ -174,3 +174,11 @@
 /* natural placement: a cut-out character stands in the scene with space around her (not a zoomed crop) */
 .face-wrap.has-img { top: 15%; left: 8%; right: 8%; bottom: 0; }
 .face-wrap.has-img .face-img { filter: drop-shadow(0 4px 6px rgba(60, 30, 10, .28)); }
+
+/* ===== Puppet: artwork cut into pieces (body, arms, head) that move on their own pivots ===== */
+.face-wrap.has-rig { left: 0; right: 0; top: 9%; bottom: 74px; width: auto; height: auto; max-width: none; aspect-ratio: auto; transform: none;
+  display: flex; justify-content: center; align-items: flex-end; }
+.puppet { position: relative; height: 100%; max-width: 100%; transform-origin: 50% 100%; will-change: transform; }
+.puppet .layer { position: absolute; inset: 0; width: 100%; height: 100%; will-change: transform; pointer-events: none; user-select: none; }
+.face-wrap.has-rig .shadow { position: absolute; left: 50%; bottom: -8px; width: 46%; height: 16px; border-radius: 50%;
+  background: rgba(50, 25, 10, .38); filter: blur(4px); transform: translateX(-50%) scale(var(--shadow, 1)); }

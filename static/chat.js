@@ -203,6 +203,37 @@ function stopSpeaking() {
 
 // ---- one animation loop: lip-sync, subtitle reveal, waveform
 const wave = $('#wave'), wctx = wave.getContext('2d');
+// ---- puppet (cut-out artwork): smooth idle / listening / thinking / speaking motion
+const puppet = document.querySelector('.puppet'), shadowEl = document.querySelector('.has-rig .shadow');
+const PL = {}; document.querySelectorAll('.puppet .layer').forEach((e) => { PL[e.dataset.name] = e; });
+const cur = { bob: 0, sy: 1, sx: 1, rot: 0, hr: 0, hy: 0, al: 0, ar: 0, sh: 1 };
+let lastT = 0;
+function puppetStep(t, speaking) {
+  const dt = Math.min(0.05, (t - lastT) / 1000 || 0.016); lastT = t;
+  const s = t / 1000, v = level;
+  let g;
+  if (speaking) {                       // gentle bounce, nodding head, waving arms
+    g = { bob: -(Math.abs(Math.sin(s * 6.5)) * 3 + v * 8), sy: 1 + v * 0.03, sx: 1 - v * 0.012, rot: Math.sin(s * 3.1) * 1.1,
+          hr: Math.sin(s * 4.6) * 2 + v * 3, hy: -v * 4, al: Math.sin(s * 5.6) * (3 + v * 3), ar: -Math.sin(s * 5.6 + 1.2) * (2.5 + v * 3), sh: 1 - v * 0.18 };
+  } else if (state === 'listening') {   // slow breathing 1.00 -> 1.02, head tilts like she is paying attention
+    const b = (Math.sin(s * 1.57) + 1) / 2;
+    g = { bob: 0, sy: 1 + b * 0.02, sx: 1 + b * 0.02, rot: Math.sin(s * 0.9) * 0.7, hr: Math.sin(s * 0.7) * 3.5, hy: 0,
+          al: Math.sin(s * 1.1) * 2, ar: -Math.sin(s * 1.1 + 1) * 2, sh: 1 };
+  } else if (state === 'thinking') {
+    g = { bob: 0, sy: 1 + 0.008 * Math.sin(s * 2), sx: 1, rot: 0, hr: 6 + Math.sin(s * 1.4) * 1.5, hy: 0, al: Math.sin(s * 1.5) * 2, ar: -2, sh: 1 };
+  } else {                              // idle
+    const b = (Math.sin(s * 1.2) + 1) / 2;
+    g = { bob: 0, sy: 1 + b * 0.012, sx: 1, rot: 0, hr: Math.sin(s * 0.6) * 1.5, hy: 0, al: Math.sin(s * 0.8) * 1.5, ar: -Math.sin(s * 0.8) * 1.5, sh: 1 };
+  }
+  const k = 1 - Math.exp(-dt * 10);     // exponential smoothing = no sudden jumps between states
+  for (const key in g) cur[key] += (g[key] - cur[key]) * k;
+  puppet.style.transform = `translate3d(0, ${cur.bob.toFixed(2)}px, 0) rotate(${cur.rot.toFixed(2)}deg) scale(${cur.sx.toFixed(4)}, ${cur.sy.toFixed(4)})`;
+  if (PL.head) PL.head.style.transform = `translate3d(0, ${cur.hy.toFixed(2)}px, 0) rotate(${cur.hr.toFixed(2)}deg)`;
+  if (PL.armL) PL.armL.style.transform = `rotate(${cur.al.toFixed(2)}deg)`;
+  if (PL.armR) PL.armR.style.transform = `rotate(${cur.ar.toFixed(2)}deg)`;
+  if (shadowEl) shadowEl.style.setProperty('--shadow', (cur.sh * (1 + cur.bob / 70)).toFixed(3));
+}
+
 function frame(t) {
   requestAnimationFrame(frame);
   const talking = curAudio && !curAudio.paused;
@@ -214,7 +245,9 @@ function frame(t) {
       const n = Math.ceil(capText.length * Math.min(1, (curAudio.currentTime + 0.15) / curAudio.duration));
       $('#cap-ko').textContent = capText.slice(0, n);
     }
-  } else level *= 0.8;
+  } else if (stage.classList.contains('fake')) level = 0.45 + 0.4 * Math.sin(t / 90);   // browser voice: no real audio level
+  else level *= 0.8;
+  if (puppet) puppetStep(t, talking || stage.classList.contains('talking'));
   face.style.setProperty('--lvl', level.toFixed(3));
   stage.style.setProperty('--lvl', level.toFixed(3));
 

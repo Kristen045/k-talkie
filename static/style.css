@@ -85,3 +85,5 @@ button.primary:disabled { opacity: .45; cursor: not-allowed; }
 .avatar.big { width: 110px; height: 110px; overflow: hidden; background: none; }
 .avatar.big .face { width: 100%; height: 100%; display: block; }
 .avatar.small { width: 36px; height: 36px; font-size: 1.05rem; }
+
+.avatar.big img.face { object-fit: cover; object-position: 50% 12%; border-radius: 50%; }

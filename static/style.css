@@ -110,3 +110,47 @@ button.primary:disabled { opacity: .45; cursor: not-allowed; }
   .head-tools { flex-direction: column; gap: 2px; }
   .topbar { padding: 10px 14px; }
 }
+
+/* ========== voice-call layout (overrides the older chat styles above) ========== */
+.avatar.big { width: 110px; height: 110px; overflow: hidden; background: none; }
+.avatar.big .face, .face-wrap .face { width: 100%; height: 100%; display: block; }
+.chat { display: grid; grid-template-columns: minmax(300px, 400px) 1fr; gap: 22px; max-width: 1120px; padding: 18px 20px; height: calc(100dvh - 58px); }
+.stage { background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; overflow-y: auto; }
+.tutor-view { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.face-wrap { position: relative; width: 190px; height: 190px; border-radius: 50%; overflow: hidden; border: 5px solid var(--line); transition: border-color .2s, box-shadow .2s; }
+.name small { color: var(--muted); font-weight: 400; }
+.stage[data-state=listening] .face-wrap { border-color: var(--ok); box-shadow: 0 0 0 8px color-mix(in srgb, var(--ok) 20%, transparent); }
+.stage[data-state=thinking] .face-wrap { border-color: var(--warn); }
+.stage.talking .face-wrap { border-color: var(--accent); box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 20%, transparent); animation: bob .5s ease-in-out infinite alternate; }
+.face .mouth { transform-box: fill-box; transform-origin: center; }
+.stage.talking .face .mouth { animation: talk .22s ease-in-out infinite alternate; }
+.face .eyes { transform-box: fill-box; transform-origin: center; animation: blink 4s infinite; }
+@keyframes talk { from { transform: scaleY(.6) scaleX(.9); } to { transform: scaleY(3.2) scaleX(1.1); } }
+@keyframes bob { to { transform: translateY(-3px); } }
+@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
+
+.captions { width: 100%; min-height: 110px; background: color-mix(in srgb, var(--line) 35%, var(--card)); border-radius: 16px; padding: 12px 14px; display: flex; flex-direction: column; gap: 6px; justify-content: center; }
+.cap-ko { font-family: "Noto Sans KR", sans-serif; font-size: 1.3rem; font-weight: 500; }
+.cap-my { font-family: "Noto Sans Myanmar", "Padauk", sans-serif; color: var(--muted); font-size: .98rem; }
+.live { min-height: 26px; color: var(--ok); font-family: "Noto Sans KR", sans-serif; font-size: 1.1rem; }
+.state { font-size: .9rem; color: var(--muted); }
+.controls { display: flex; align-items: center; gap: 14px; margin-top: 2px; }
+.bigmic { position: relative; width: 84px; height: 84px; border-radius: 50%; border: 0; cursor: pointer; background: var(--accent); color: #fff; font-size: 2rem; display: grid; place-items: center; box-shadow: 0 8px 22px -8px var(--accent); }
+.bigmic:disabled { opacity: .4; cursor: not-allowed; }
+.bigmic .ring { position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--ok); opacity: 0; }
+.stage[data-state=listening] .bigmic { background: var(--ok); box-shadow: 0 8px 22px -8px var(--ok); }
+.stage[data-state=listening] .bigmic .ring { animation: ripple 1.3s infinite; }
+@keyframes ripple { from { transform: scale(1); opacity: .8; } to { transform: scale(1.6); opacity: 0; } }
+.ghost { border: 2px solid var(--line); background: transparent; color: inherit; padding: 10px 16px; border-radius: 12px; font: inherit; cursor: pointer; }
+
+.panel { display: flex; flex-direction: column; min-height: 0; background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 14px 16px; }
+.panel-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.panel .log { flex: 1; min-height: 0; }
+.panel .composer { border-top: 1px solid var(--line); }
+
+@media (max-width: 860px) {
+  .chat { grid-template-columns: 1fr; height: auto; gap: 14px; padding: 12px; }
+  .face-wrap { width: 140px; height: 140px; }
+  .panel .log { max-height: 55vh; min-height: 220px; }
+}
+@media (prefers-reduced-motion: reduce) { .stage.talking .face-wrap, .face .mouth, .face .eyes, .bigmic .ring { animation: none !important; } }

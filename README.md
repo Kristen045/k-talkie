@@ -6,7 +6,7 @@ Talk with an AI tutor who speaks **only Korean and Burmese**.
 - **Two tutors:** Yuri (유리) and Joohyuk (주혁)
 - **Three styles:** polite teacher (default), friendly friend, custom role
   (type `now you're a cafe waiter` any time)
-- **Voice:** speak with the 🎤 button (Chrome/Edge) and hear replies with 🔊
+- **Voice-first:** tap the big mic and just talk. The tutor answers out loud, then listens again, hands-free (Chrome/Edge). The text transcript is on the right.
 - **History:** every conversation is saved and can be reopened
 
 ## Run it

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_face.html" import face %}
 {% block content %}
 <main class="container">
   <section class="hero">
@@ -11,7 +12,7 @@
   <div class="tutors" id="tutors">
     {% for key, t in tutors.items() %}
     <button type="button" class="tutor-card {{ key }}" data-tutor="{{ key }}" aria-pressed="false">
-      <span class="avatar {{ key }}">{{ t.initial }}</span>
+      <span class="avatar big {{ key }}">{{ face(key) }}</span>
       <strong>{{ t.name_ko }} <small>{{ t.name_en }}</small></strong>
       <span>{{ t.blurb }}</span>
       <span class="my">{{ t.blurb_my }}</span>

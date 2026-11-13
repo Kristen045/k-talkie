@@ -12,3 +12,7 @@ __pycache__/
 .DS_Store
 # Local database
 data/
+
+# Third-party tutor artwork lives only on your own computer unless you decide to publish it
+static/characters/*
+!static/characters/README.txt

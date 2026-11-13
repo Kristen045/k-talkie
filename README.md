@@ -48,3 +48,7 @@ Browser (templates/ + static/)  ──►  FastAPI (main.py, app/routes.py)
 Change them with env vars in `.env`: `KTALKIE_VOICE_YURI`, `KTALKIE_VOICE_JOOHYUK`
 (options: `ko-KR-SunHiNeural` female, `ko-KR-InJoonNeural` (default) or `ko-KR-HyunsuMultilingualNeural` male).
 If the voice service can't be reached, the app falls back to the browser's built-in voice.
+
+## Using your own character artwork
+Drop `yuri.png` and/or `joohyuk.png` into `static/characters/` (see the README.txt there). They replace the
+built-in drawings and bounce/glow with the tutor's voice. Only use artwork you have permission to use, and credit the creator.

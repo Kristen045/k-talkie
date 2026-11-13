@@ -15,7 +15,7 @@
       <div class="chip name-chip"><strong>{{ tutor.name_ko }}</strong> {{ tutor.name_en }} · <span id="mode-label"></span></div>
       <div class="chip state-chip" id="state">Tap Talk to start</div>
       <div class="think" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="face-wrap" id="face">{{ face(conv.tutor) }}</div>
+      <div class="face-wrap" id="face">{% if img %}<img class="face-img" src="{{ img }}" alt="{{ tutor.name_en }}">{% else %}{{ face(conv.tutor) }}{% endif %}</div>
       <div class="subtitle">
         <canvas id="wave" class="wave" width="320" height="34" aria-hidden="true"></canvas>
         <div id="cap-ko" class="cap-ko"></div>

@@ -133,3 +133,11 @@
   .panel .log { max-height: 55vh; min-height: 240px; }
 }
 @media (prefers-reduced-motion: reduce) { .bokeh i, .face .head, .face .eye, .row, .check, .think i, .talk .ring { animation: none !important; } }
+
+/* your own artwork (static/characters/*.png): moves with the voice since a picture has no mouth to animate */
+.face-img { width: 100%; height: 100%; object-fit: contain; display: block; transform-origin: 50% 100%;
+  transform: translateY(calc(var(--lvl) * -8px)) scale(calc(1 + var(--lvl) * .05)) rotate(calc(var(--lvl) * 1.5deg)); transition: transform .05s linear;
+  filter: drop-shadow(0 8px 0 rgba(0, 0, 0, .12)); animation: breathe-img 4s ease-in-out infinite; }
+@keyframes breathe-img { 50% { translate: 0 -3px; } }
+.stage[data-state=listening] .face-img { animation: lean 2.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .face-img { animation: none !important; } }

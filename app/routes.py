@@ -15,6 +15,20 @@ from pathlib import Path
 templates = Jinja2Templates(directory=Path(__file__).resolve().parent.parent / "templates")
 router = APIRouter()
 
+CHAR_DIR = Path(__file__).resolve().parent.parent / "static" / "characters"
+
+
+def _custom_imgs() -> dict:
+    """If you drop yuri.png / joohyuk.png into static/characters/, those images replace the drawn faces."""
+    found = {}
+    for key in TUTORS:
+        for ext in ("png", "webp", "jpg", "jpeg", "svg"):
+            if (CHAR_DIR / f"{key}.{ext}").exists():
+                found[key] = f"/static/characters/{key}.{ext}"
+                break
+    return found
+
+
 # Typing "now you're a cafe waiter" switches to a custom role.
 ROLE_PATTERN = re.compile(r"^\s*now\s+you(?:'re|\s+are)\s+(.{2,80}?)[.!]?\s*$", re.IGNORECASE)
 
@@ -23,14 +37,15 @@ ROLE_PATTERN = re.compile(r"^\s*now\s+you(?:'re|\s+are)\s+(.{2,80}?)[.!]?\s*$", 
 @router.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse(request, "index.html", {
-        "tutors": TUTORS, "modes": MODES, "live": ai.is_live()})
+        "tutors": TUTORS, "modes": MODES, "live": ai.is_live(), "imgs": _custom_imgs()})
 
 
 @router.get("/chat/{conv_id}", response_class=HTMLResponse)
 def chat_page(request: Request, conv_id: int):
     conv = _get_conversation(conv_id)
     return templates.TemplateResponse(request, "chat.html", {
-        "conv": conv, "tutor": TUTORS[conv["tutor"]], "modes": MODES, "live": ai.is_live()})
+        "conv": conv, "tutor": TUTORS[conv["tutor"]], "modes": MODES, "live": ai.is_live(),
+        "img": _custom_imgs().get(conv["tutor"])})
 
 
 @router.get("/history", response_class=HTMLResponse)

@@ -12,7 +12,7 @@
   <div class="tutors" id="tutors">
     {% for key, t in tutors.items() %}
     <button type="button" class="tutor-card {{ key }}" data-tutor="{{ key }}" aria-pressed="false">
-      <span class="avatar big {{ key }}">{{ face(key) }}</span>
+      <span class="avatar big {{ key }}">{% if imgs.get(key) %}<img class="face" src="{{ imgs[key] }}" alt="{{ t.name_en }}">{% else %}{{ face(key) }}{% endif %}</span>
       <strong>{{ t.name_ko }} <small>{{ t.name_en }}</small></strong>
       <span>{{ t.blurb }}</span>
       <span class="my">{{ t.blurb_my }}</span>

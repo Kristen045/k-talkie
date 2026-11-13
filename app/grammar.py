@@ -18,6 +18,44 @@ TYPOS = {"안녕하세여": "안녕하세요", "괜찬아요": "괜찮아요", "
 PRESENT_CASUAL = {"먹어", "좋아", "있어", "없어", "알아", "몰라", "싫어", "괜찮아", "재밌어", "맛있어", "바빠", "예뻐"}
 
 
+# present -> past for common verbs (used when the sentence has a past-time word like 어제)
+PAST = {"만나": "만났", "가": "갔", "와": "왔", "먹어": "먹었", "마셔": "마셨", "봐": "봤", "해": "했", "사": "샀",
+        "자": "잤", "놀아": "놀았", "읽어": "읽었", "써": "썼", "있어": "있었", "배워": "배웠", "보내": "보냈",
+        "만들어": "만들었", "들어": "들었", "일해": "일했", "공부해": "공부했", "운동해": "운동했", "요리해": "요리했"}
+PAST_WORDS = ("어제", "지난주", "지난달", "작년", "아까")
+
+
+def _to_past(word: str):
+    """'만나요' -> '만났어요', '가' -> '갔어'. Returns None if we don't know the verb."""
+    polite = word.endswith("요")
+    stem = word[:-1] if polite else word
+    past = PAST.get(stem)
+    if past is None and stem.endswith("해"):
+        past = stem[:-1] + "했"
+    return None if past is None else past + ("어요" if polite else "어")
+
+
+PHRASEBOOK = {  # demo mode only: with an API key the AI translates anything you say
+    "안녕하세요": "မင်္ဂလာပါ။",
+    "감사합니다": "ကျေးဇူးတင်ပါတယ်။",
+    "저는 학생이에요": "ကျွန်တော်/ကျွန်မ ကျောင်းသား/ကျောင်းသူ ပါ။",
+    "저는 민이에요": "ကျွန်တော်/ကျွန်မ နာမည် မင်း ပါ။",
+    "어제 친구를 만났어요": "မနေ့က သူငယ်ချင်းနဲ့ တွေ့ခဲ့တယ်။",
+    "어제 영화를 봤어요": "မနေ့က ရုပ်ရှင်ကြည့်ခဲ့တယ်။",
+    "나는 커피를 좋아해요": "ငါ ကော်ဖီကြိုက်တယ်။",
+    "저는 커피를 좋아해요": "ကျွန်တော်/ကျွန်မ ကော်ဖီ ကြိုက်ပါတယ်။",
+    "저는 한국어를 공부해요": "ကျွန်တော်/ကျွန်မ ကိုရီးယားစာ လေ့လာနေပါတယ်။",
+    "저는 미얀마 사람이에요": "ကျွန်တော်/ကျွန်မ မြန်မာလူမျိုး ပါ။",
+    "한국 음식을 좋아해요": "ကိုရီးယားအစားအစာ ကြိုက်ပါတယ်။",
+    "김치를 좋아해요": "ကင်ချီ ကြိုက်ပါတယ်။",
+    "잘 지내요": "နေကောင်းပါတယ်။",
+}
+
+
+def _translate(sentence: str) -> str:
+    return PHRASEBOOK.get(re.sub(r"[.!?]+$", "", sentence.strip()), "")
+
+
 def has_batchim(ch: str) -> bool:
     """True if the Korean syllable ends with a consonant (받침)."""
     code = ord(ch) - 0xAC00
@@ -42,7 +80,7 @@ PARTICLES = {"은": ("은", "는"), "는": ("은", "는"), "이": ("이", "가")
 
 def demo_check(text: str, mode: str) -> dict:
     if not HANGUL.search(text):
-        return {"score": 0, "corrected": "",
+        return {"score": 0, "corrected": "", "burmese": "",
                 "note": "ကိုရီးယားလို ပြောကြည့်ပါ! ဗမာလို/အင်္ဂလိပ်လို မဟုတ်ဘဲ ကိုရီးယားစကားနဲ့ ဖြေပါ။"}
     notes, corrected = [], text
 
@@ -64,6 +102,14 @@ def demo_check(text: str, mode: str) -> dict:
     pattern = r"(?<![가-힣])(" + "|".join(sorted(NOUNS, key=len, reverse=True)) + r")(은|는|이|가|을|를)(?![가-힣])"
     corrected = re.sub(pattern, fix_particle, corrected)
 
+    if any(w in corrected for w in PAST_WORDS):          # 어제 + present tense is a classic mistake
+        words = corrected.rstrip(" .!?").split(" ")
+        fixed = _to_past(words[-1]) if words else None
+        if fixed:
+            tail = corrected[len(corrected.rstrip(" .!?")):]
+            corrected = " ".join(words[:-1] + [fixed]) + tail
+            notes.append("'어제' (မနေ့က) လိုမျိုး အတိတ်ကို ပြောရင် ကြိယာကို အတိတ် '-았/었어요' ပုံစံ သုံးပါ။ (만나요 → 만났어요)")
+
     if mode == "teacher":
         words = corrected.rstrip(" .!?").split(" ")
         last = words[-1] if words else ""
@@ -78,5 +124,6 @@ def demo_check(text: str, mode: str) -> dict:
             notes.append("ဆရာနဲ့ ပြောရင် ယဉ်ကျေးတဲ့ '-요' ပုံစံ သုံးပါ (반말 မဟုတ်ဘဲ 존댓말)။")
 
     if not notes:
-        return {"score": 100, "corrected": "", "note": ""}
-    return {"score": max(55, 100 - 15 * len(notes)), "corrected": corrected, "note": " ".join(notes)}
+        return {"score": 100, "corrected": "", "note": "", "burmese": _translate(text)}
+    return {"score": max(55, 100 - 15 * len(notes)), "corrected": corrected, "note": " ".join(notes),
+            "burmese": _translate(corrected)}

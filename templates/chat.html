@@ -1,53 +1,52 @@
 {% extends "base.html" %}
 {% from "_face.html" import face %}
 {% block title %}{{ tutor.name_en }} · K-Talkie{% endblock %}
+{% block head %}<link rel="stylesheet" href="/static/chat.css">{% endblock %}
 {% block content %}
-<main class="chat"
+<main class="chat stage" id="stage" data-state="idle"
       data-conv="{{ conv.id }}" data-tutor="{{ conv.tutor }}"
       data-mode="{{ conv.mode }}" data-role="{{ conv.custom_role or '' }}"
       data-initial="{{ tutor.initial }}">
 
-  <!-- LEFT: the voice "call" with the tutor -->
-  <section class="stage" id="stage" data-state="idle">
-    <div class="blob b1"></div><div class="blob b2"></div>
-    <div class="tutor-view">
+  <!-- LEFT: you and the tutor, like a video call -->
+  <section class="call">
+    <div class="tile tutor-tile {{ conv.tutor }}">
+      <div class="bokeh"><i></i><i></i><i></i><i></i></div>
+      <div class="chip name-chip"><strong>{{ tutor.name_ko }}</strong> {{ tutor.name_en }} · <span id="mode-label"></span></div>
+      <div class="chip state-chip" id="state">Tap Talk to start</div>
       <div class="think" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="face-wrap {{ conv.tutor }}" id="face">{{ face(conv.tutor) }}</div>
-      <div class="name"><strong>{{ tutor.name_ko }}</strong> <small>{{ tutor.name_en }}</small></div>
-      <div class="mode my" id="mode-label"></div>
+      <div class="face-wrap" id="face">{{ face(conv.tutor) }}</div>
+      <div class="subtitle">
+        <canvas id="wave" class="wave" width="320" height="34" aria-hidden="true"></canvas>
+        <div id="cap-ko" class="cap-ko"></div>
+      </div>
     </div>
 
-    <div class="captions" aria-live="polite">
-      <div id="cap-ko" class="cap-ko"></div>
-      <div id="cap-my" class="cap-my"></div>
-      <div id="cap-tip" class="tip" hidden></div>
+    <div class="tile cam-tile" id="cam-tile">
+      <video id="cam" autoplay muted playsinline></video>
+      <div class="cam-off" id="cam-off">📷<br><small>Camera is off · ကင်မရာ ပိတ်ထားပါတယ်</small></div>
+      <div class="chip name-chip">나 · Me</div>
+      <div id="live" class="live"></div>
     </div>
 
-    <canvas id="wave" class="wave" width="360" height="56" aria-hidden="true"></canvas>
-    <div id="live" class="live"></div>
-    <div id="mycheck" class="mycheck" hidden></div>
-    <div id="state" class="state">Tap the mic to start</div>
-
+    <p id="mic-hint" class="hint" hidden></p>
     <div class="controls">
-      <button id="call-btn" class="bigmic" aria-label="Start talking">
-        <span class="ring"></span><span class="mic-icon">🎤</span>
-      </button>
-      <button id="end-btn" class="ghost" hidden>⏸ Pause</button>
+      <button id="call-btn" class="talk" aria-label="Talk"><span class="ring"></span>🎤 <b>Talk</b></button>
+      <button id="cam-btn" class="ghost" aria-pressed="false">📷 Camera</button>
+      <button id="end-btn" class="ghost danger">End call</button>
     </div>
-    <p class="hint" id="mic-hint" hidden></p>
   </section>
 
-  <!-- RIGHT: transcript + typing + settings -->
+  <!-- RIGHT: the live script -->
   <section class="panel">
     <div class="panel-head">
-      <div class="modes small" id="modes">
-        {% for key, m in modes.items() %}
-        <button type="button" class="pill" data-mode="{{ key }}">{{ m.label }}</button>
-        {% endfor %}
-      </div>
-      <div class="head-tools">
-        <label class="switch"><input type="checkbox" id="toggle-my" checked> မြန်မာ</label>
-      </div>
+      <h2>📜 LIVE SCRIPT <small class="my">တိုက်ရိုက်စာသား</small></h2>
+      <label class="switch"><input type="checkbox" id="toggle-my" checked> မြန်မာ</label>
+    </div>
+    <div class="modes small" id="modes">
+      {% for key, m in modes.items() %}
+      <button type="button" class="pill" data-mode="{{ key }}">{{ m.label }}</button>
+      {% endfor %}
     </div>
     <div id="custom-box" class="inline" hidden>
       <input id="custom-role" maxlength="80" placeholder="Role, e.g. cafe waiter">
@@ -58,10 +57,23 @@
     <p id="error" class="error" hidden></p>
 
     <form id="form" class="composer" autocomplete="off">
-      <input id="text" placeholder="Or type here… (try: now you're a cafe waiter)" maxlength="1000">
+      <input id="text" placeholder="Or type in Korean… (try: now you're a cafe waiter)" maxlength="1000">
       <button class="primary" id="send">Send</button>
     </form>
   </section>
+
+  <!-- shown after "End call" -->
+  <div class="summary" id="summary" hidden>
+    <div class="summary-card">
+      <h2>Call ended · စကားပြောဆိုမှု ပြီးပါပြီ 👏</h2>
+      <div id="summary-body" class="summary-body"></div>
+      <div class="summary-actions">
+        <button class="primary" id="again">Call again</button>
+        <a class="ghost" href="/history">History</a>
+        <a class="ghost" href="/">Home</a>
+      </div>
+    </div>
+  </div>
 </main>
 {% endblock %}
 {% block scripts %}<script src="/static/chat.js"></script>{% endblock %}

@@ -64,7 +64,8 @@ def _parse(text: str) -> dict:
                 score = None
             if score is not None:
                 reply["check"] = {"score": score, "corrected": str(c.get("corrected") or "").strip(),
-                                  "note": str(c.get("note") or "").strip()}
+                                  "note": str(c.get("note") or "").strip(),
+                                  "burmese": str(c.get("burmese") or "").strip()}
         return reply
     except (ValueError, AttributeError):
         return {"korean": text.strip(), "burmese": "", "tip": ""}

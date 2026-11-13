@@ -91,8 +91,8 @@ def _tutor_reply(conv, history: list[dict]) -> dict:
         row = db.execute("SELECT * FROM messages WHERE id = ?", (cur.lastrowid,)).fetchone()
         check = reply.get("check")                       # grammar check of the learner's last message
         if check and history and history[-1]["role"] == "user":
-            db.execute("UPDATE messages SET check_score = ?, check_corrected = ?, check_note = ? WHERE id = ?",
-                       (check["score"], check["corrected"], check["note"], history[-1]["id"]))
+            db.execute("UPDATE messages SET check_score = ?, check_corrected = ?, check_note = ?, burmese = ? WHERE id = ?",
+                       (check["score"], check["corrected"], check["note"], check.get("burmese", ""), history[-1]["id"]))
     return dict(row)
 
 

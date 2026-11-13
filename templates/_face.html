@@ -13,6 +13,7 @@
     <linearGradient id="top-{{ key }}" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="{{ '#ff9db5' if y else '#5aa0e6' }}"/><stop offset="1" stop-color="{{ '#e8668a' if y else '#3a6fb8' }}"/>
     </linearGradient>
+    <linearGradient id="cap-{{ key }}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd24d"/><stop offset="1" stop-color="#f2a81d"/></linearGradient>
     <radialGradient id="iris-{{ key }}" cx="50%" cy="35%" r="70%">
       <stop offset="0" stop-color="{{ '#8a5a3c' if y else '#6b4a30' }}"/><stop offset="1" stop-color="#2a1a14"/>
     </radialGradient>
@@ -49,14 +50,21 @@
     <path d="M96 62 Q132 46 168 56" stroke="#8a6060" stroke-width="5" stroke-linecap="round" fill="none" opacity=".55"/>
     <g transform="translate(206 70) rotate(24)"><rect x="-13" y="-5" width="26" height="10" rx="5" fill="#ffd36b"/><circle cx="0" cy="0" r="4" fill="#fff"/></g>
     {% else %}
-    <!-- short tousled hair -->
-    <path d="M64 130 C54 62 100 26 150 26 C204 26 248 62 236 130 C230 100 214 84 196 80 L188 62 L172 80 L156 58 L140 80 L120 62 L112 84 C92 90 72 104 64 130Z" fill="url(#hair-joohyuk)"/>
-    <path d="M100 56 Q140 40 184 52" stroke="#6a5048" stroke-width="5" stroke-linecap="round" fill="none" opacity=".5"/>
+    <!-- short hair peeking out under a cap -->
+    <path d="M64 132 C58 108 66 96 82 94 L90 128 Z M236 132 C242 108 234 96 218 94 L210 128 Z" fill="url(#hair-joohyuk)"/>
+    <!-- baseball cap (original design) -->
+    <path d="M60 108 C54 48 100 20 150 20 C200 20 246 48 240 108 C210 98 90 98 60 108Z" fill="url(#cap-joohyuk)"/>
+    <path d="M150 20 L150 98" stroke="#00000022" stroke-width="3"/>
+    <circle cx="150" cy="22" r="6" fill="#fff3c4"/>
+    <path d="M96 52 Q150 36 204 52" stroke="#ffffff66" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M58 106 Q150 90 242 106 Q238 124 150 118 Q62 124 58 106Z" fill="#d99a1c"/>
+    <path d="M70 108 Q150 96 230 108" stroke="#ffffff55" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="150" cy="64" r="15" fill="#fff" opacity=".92"/><path d="M143 66 l5 5 l9 -11" stroke="#e8574c" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
     {% endif %}
 
     <!-- eyebrows -->
     <g class="brow" fill="none" stroke="{{ '#4a2e2e' if y else '#2e211f' }}" stroke-linecap="round" stroke-width="{{ 5 if y else 7 }}">
-      <path d="M92 118 Q112 106 134 114"/><path d="M166 114 Q188 106 208 118"/>
+      <path d="M92 {{ 118 if y else 124 }} Q112 {{ 106 if y else 112 }} 134 {{ 114 if y else 120 }}"/><path d="M166 {{ 114 if y else 120 }} Q188 {{ 106 if y else 112 }} 208 {{ 118 if y else 124 }}"/>
     </g>
 
     <!-- eyes (big and glossy) -->

@@ -11,8 +11,8 @@
 .stage[data-state=thinking] .state-chip { background: rgba(217, 154, 28, .9); }
 
 /* tutor tile: warm movie-like backdrop with floating light */
-.tutor-tile.yuri { background: radial-gradient(120% 90% at 30% 10%, #ffd9e4 0%, #f7a8c2 45%, #b866a4 100%); }
-.tutor-tile.joohyuk { background: radial-gradient(120% 90% at 70% 10%, #cfe7ff 0%, #8fc0ef 45%, #4c78c2 100%); }
+.tutor-tile.yuri { background: radial-gradient(120% 90% at 30% 10%, #ffe1e1 0%, #ffb8b8 55%, #f59090 100%); }
+.tutor-tile.joohyuk { background: radial-gradient(120% 90% at 70% 10%, #fff3c4 0%, #bfe3ff 55%, #8ec4f0 100%); }
 .bokeh i { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, .28); filter: blur(2px); animation: floaty 9s ease-in-out infinite alternate; }
 .bokeh i:nth-child(1) { width: 70px; height: 70px; left: 8%; top: 22%; }
 .bokeh i:nth-child(2) { width: 38px; height: 38px; right: 12%; top: 18%; animation-delay: -3s; }
@@ -21,12 +21,13 @@
 @keyframes floaty { to { transform: translate(14px, -22px) scale(1.2); } }
 
 .face-wrap { --lvl: 0; position: absolute; left: 50%; bottom: 40px; height: 86%; aspect-ratio: 1; max-width: 96%; transform: translateX(-50%); }
-.face-wrap .face { width: 100%; height: 100%; display: block; overflow: visible; filter: drop-shadow(0 14px 18px rgba(40, 20, 60, .28)); }
+.face-wrap .face { width: 100%; height: 100%; display: block; overflow: visible; filter: drop-shadow(0 8px 0 rgba(0, 0, 0, .12)); }
 .face .head { transform-box: fill-box; transform-origin: 50% 90%; animation: breathe 4s ease-in-out infinite; }
 @keyframes breathe { 50% { transform: translateY(-3px) rotate(.8deg); } }
 .face .eye { transform-box: fill-box; transform-origin: center; animation: blink 4.6s infinite; }
 @keyframes blink { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.08); } }
 .face .iris { transition: transform .25s; }
+.stage.talking .face .head { transform-origin: 50% 90%; }
 .face .brow { transition: transform .15s; transform: translateY(calc(var(--lvl) * -5px)); }
 .face .mouth-smile { opacity: max(0, calc(1 - var(--lvl) * 10)); }
 .face .mouth-open { transform-box: fill-box; transform-origin: center; transform: scaleY(calc(.06 + var(--lvl) * 1.25)) scaleX(calc(.8 + var(--lvl) * .2)); opacity: min(1, calc(var(--lvl) * 12)); transition: transform .05s linear; }

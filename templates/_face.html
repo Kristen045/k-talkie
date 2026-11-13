@@ -1,98 +1,79 @@
-{# Original cartoon tutors (our own design, soft 3D-animation style). Usage: {{ face('yuri') }}
-   CSS drives the animation through --lvl (0..1 = how loud the voice is right now). #}
+{# Original cartoon tutors in a bold-outline, flat-color style (our own designs).
+   Usage: {{ face('yuri') }}.  CSS animates .head .eye .iris .brow .mouth-smile .mouth-open via --lvl (0..1 voice loudness). #}
 {% macro face(key) %}
 {% set y = key == 'yuri' %}
+{% set skin = '#fdd9b0' %}
 <svg class="face" viewBox="0 0 300 300" role="img" aria-label="{{ 'Yuri' if y else 'Joohyuk' }}">
-  <defs>
-    <radialGradient id="skin-{{ key }}" cx="45%" cy="38%" r="70%">
-      <stop offset="0" stop-color="{{ '#ffe8d6' if y else '#fbdcc0' }}"/><stop offset="1" stop-color="{{ '#f4c3a4' if y else '#e9b08a' }}"/>
-    </radialGradient>
-    <linearGradient id="hair-{{ key }}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="{{ '#5a3a3a' if y else '#3b2c2a' }}"/><stop offset="1" stop-color="{{ '#2a1a1c' if y else '#1c1413' }}"/>
-    </linearGradient>
-    <linearGradient id="top-{{ key }}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="{{ '#ff9db5' if y else '#5aa0e6' }}"/><stop offset="1" stop-color="{{ '#e8668a' if y else '#3a6fb8' }}"/>
-    </linearGradient>
-    <linearGradient id="cap-{{ key }}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd24d"/><stop offset="1" stop-color="#f2a81d"/></linearGradient>
-    <radialGradient id="iris-{{ key }}" cx="50%" cy="35%" r="70%">
-      <stop offset="0" stop-color="{{ '#8a5a3c' if y else '#6b4a30' }}"/><stop offset="1" stop-color="#2a1a14"/>
-    </radialGradient>
-    <radialGradient id="blush-{{ key }}"><stop offset="0" stop-color="#ff8a9a" stop-opacity=".55"/><stop offset="1" stop-color="#ff8a9a" stop-opacity="0"/></radialGradient>
-    <clipPath id="mouthclip-{{ key }}"><ellipse cx="0" cy="0" rx="17" ry="14"/></clipPath>
-  </defs>
+  <defs><clipPath id="mouthclip-{{ key }}"><ellipse cx="0" cy="0" rx="21" ry="16"/></clipPath></defs>
+  <g stroke="#111" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
 
-  <!-- shoulders and clothes -->
-  <path d="M30 300 C30 246 84 224 150 224 C216 224 270 246 270 300Z" fill="url(#top-{{ key }})"/>
-  {% if y %}
-  <path d="M112 228 L150 268 L188 228 Q150 214 112 228Z" fill="#fff7f2"/>
-  <circle cx="150" cy="276" r="5" fill="#ffd36b"/>
-  {% else %}
-  <path d="M104 230 Q150 252 196 230 Q150 214 104 230Z" fill="#2f5a98"/>
-  <path d="M132 246 L128 282 M168 246 L172 282" stroke="#f2f6ff" stroke-width="4" stroke-linecap="round"/>
-  {% endif %}
-
-  <g class="head">
-    <!-- neck + ears -->
-    <rect x="128" y="188" width="44" height="46" rx="18" fill="{{ '#efc0a2' if y else '#e0a982' }}"/>
-    <ellipse cx="68" cy="154" rx="11" ry="16" fill="url(#skin-{{ key }})"/><ellipse cx="232" cy="154" rx="11" ry="16" fill="url(#skin-{{ key }})"/>
-
+    <!-- body -->
     {% if y %}
-    <!-- long hair behind the head -->
-    <path d="M58 150 C42 64 98 22 150 22 C204 22 260 66 242 150 C246 204 252 240 232 272 C204 262 198 214 198 190 L102 190 C102 214 96 262 68 272 C48 240 54 204 58 150Z" fill="url(#hair-yuri)"/>
-    {% endif %}
-
-    <!-- face -->
-    <ellipse cx="150" cy="142" rx="{{ 80 if y else 83 }}" ry="{{ 84 if y else 86 }}" fill="url(#skin-{{ key }})"/>
-
-    {% if y %}
-    <!-- bangs, side-swept -->
-    <path d="M66 136 C62 64 112 34 152 36 C204 36 240 70 234 136 C222 100 196 80 164 78 C134 88 96 104 66 136Z" fill="url(#hair-yuri)"/>
-    <path d="M96 62 Q132 46 168 56" stroke="#8a6060" stroke-width="5" stroke-linecap="round" fill="none" opacity=".55"/>
-    <g transform="translate(206 70) rotate(24)"><rect x="-13" y="-5" width="26" height="10" rx="5" fill="#ffd36b"/><circle cx="0" cy="0" r="4" fill="#fff"/></g>
+    <path d="M36 304 C36 254 88 236 150 236 C212 236 264 254 264 304Z" fill="#ec2a96"/>
+    <path d="M116 238 Q150 272 184 238Z" fill="{{ skin }}"/>
+    <path d="M70 262 Q58 286 60 304 M230 262 Q242 286 240 304" fill="none" stroke-width="4" opacity=".5"/>
     {% else %}
-    <!-- short hair peeking out under a cap -->
-    <path d="M64 132 C58 108 66 96 82 94 L90 128 Z M236 132 C242 108 234 96 218 94 L210 128 Z" fill="url(#hair-joohyuk)"/>
-    <!-- baseball cap (original design) -->
-    <path d="M60 108 C54 48 100 20 150 20 C200 20 246 48 240 108 C210 98 90 98 60 108Z" fill="url(#cap-joohyuk)"/>
-    <path d="M150 20 L150 98" stroke="#00000022" stroke-width="3"/>
-    <circle cx="150" cy="22" r="6" fill="#fff3c4"/>
-    <path d="M96 52 Q150 36 204 52" stroke="#ffffff66" stroke-width="5" stroke-linecap="round" fill="none"/>
-    <path d="M58 106 Q150 90 242 106 Q238 124 150 118 Q62 124 58 106Z" fill="#d99a1c"/>
-    <path d="M70 108 Q150 96 230 108" stroke="#ffffff55" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <circle cx="150" cy="64" r="15" fill="#fff" opacity=".92"/><path d="M143 66 l5 5 l9 -11" stroke="#e8574c" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M36 304 C36 254 88 236 150 236 C212 236 264 254 264 304Z" fill="#2fdc3a"/>
+    <path d="M114 238 Q150 262 186 238Z" fill="{{ skin }}"/>
+    <path d="M114 238 L128 262 L150 246 L172 262 L186 238" fill="#25c030"/>
     {% endif %}
 
-    <!-- eyebrows -->
-    <g class="brow" fill="none" stroke="{{ '#4a2e2e' if y else '#2e211f' }}" stroke-linecap="round" stroke-width="{{ 5 if y else 7 }}">
-      <path d="M92 {{ 118 if y else 124 }} Q112 {{ 106 if y else 112 }} 134 {{ 114 if y else 120 }}"/><path d="M166 {{ 114 if y else 120 }} Q188 {{ 106 if y else 112 }} 208 {{ 118 if y else 124 }}"/>
-    </g>
+    <g class="head">
+      <!-- neck, ears -->
+      <rect x="126" y="206" width="48" height="40" rx="14" fill="{{ skin }}"/>
+      <circle cx="66" cy="158" r="17" fill="{{ skin }}"/><circle cx="234" cy="158" r="17" fill="{{ skin }}"/>
+      <path d="M62 158 q6 -6 8 4 M238 158 q-6 -6 -8 4" fill="none" stroke-width="3.5"/>
 
-    <!-- eyes (big and glossy) -->
-    {% for cx in [112, 188] %}
-    <g transform="translate({{ cx }} 150)"><g class="eye">
-      <ellipse cx="0" cy="0" rx="20" ry="24" fill="#fff"/>
-      <g class="iris">
-        <circle cx="0" cy="1" r="15.5" fill="url(#iris-{{ key }})"/>
-        <circle cx="0" cy="1" r="8" fill="#150d0d"/>
-        <circle cx="-5.5" cy="-6" r="6" fill="#fff"/><circle cx="6" cy="6" r="2.8" fill="#fff" opacity=".9"/>
+      {% if y %}
+      <!-- pigtails behind the head -->
+      <path d="M72 120 C26 122 14 196 48 226 C46 188 66 166 86 150Z" fill="#111"/>
+      <path d="M228 120 C274 122 286 196 252 226 C254 188 234 166 214 150Z" fill="#111"/>
+      {% endif %}
+
+      <!-- head -->
+      <ellipse cx="150" cy="146" rx="86" ry="82" fill="{{ skin }}"/>
+
+      {% if y %}
+      <!-- black hair with side bangs + pink hair ties -->
+      <path d="M62 138 C54 50 108 22 152 24 C202 24 248 54 240 138 C226 100 198 82 162 80 C126 90 92 100 62 138Z" fill="#111"/>
+      <path d="M100 52 Q140 38 184 50" stroke="#555" stroke-width="5" fill="none"/>
+      <circle cx="68" cy="130" r="10" fill="#ff4fa8"/><circle cx="232" cy="130" r="10" fill="#ff4fa8"/>
+      {% else %}
+      <!-- hair under the cap -->
+      <path d="M62 140 C54 112 66 98 86 96 L92 134Z M238 140 C246 112 234 98 214 96 L208 134Z" fill="#111"/>
+      <!-- yellow cap -->
+      <path d="M60 116 C52 52 100 18 150 18 C200 18 248 52 240 116 C206 104 94 104 60 116Z" fill="#ffd21e"/>
+      <path d="M150 18 L150 104" fill="none" stroke-width="4" opacity=".45"/>
+      <circle cx="150" cy="20" r="7" fill="#ffd21e"/>
+      <path d="M46 116 Q150 90 254 116 Q258 138 150 136 Q42 138 46 116Z" fill="#f5b800"/>
+      {% endif %}
+
+      <!-- eyebrows -->
+      <g class="brow" fill="none" stroke-width="7">
+        <path d="M92 {{ 124 if y else 142 }} Q112 {{ 112 if y else 130 }} 134 {{ 120 if y else 138 }}"/><path d="M166 {{ 120 if y else 138 }} Q188 {{ 112 if y else 130 }} 208 {{ 124 if y else 142 }}"/>
       </g>
-      <path d="M-21 -6 Q0 -30 21 -6" stroke="#1d1213" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-      {% if y %}<path d="M{{ -21 if cx == 112 else 21 }} -6 l{{ -7 if cx == 112 else 7 }} -4" stroke="#1d1213" stroke-width="3.5" stroke-linecap="round"/>{% endif %}
-    </g></g>
-    {% endfor %}
 
-    <!-- nose, cheeks -->
-    <path d="M146 176 Q150 182 156 178" stroke="{{ '#d9a284' if y else '#c98f6c' }}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-    <circle cx="84" cy="184" r="19" fill="url(#blush-{{ key }})"/><circle cx="216" cy="184" r="19" fill="url(#blush-{{ key }})"/>
+      <!-- big round eyes -->
+      {% for cx in [114, 186] %}
+      <g transform="translate({{ cx }} {{ 156 if y else 164 }})"><g class="eye">
+        <ellipse cx="0" cy="0" rx="22" ry="24" fill="#fff"/>
+        <g class="iris"><circle cx="0" cy="2" r="9" fill="#111" stroke="none"/><circle cx="-3" cy="-2" r="3.2" fill="#fff" stroke="none"/></g>
+      </g></g>
+      {% endfor %}
 
-    <!-- mouth: smile when quiet, opens with the voice -->
-    <g transform="translate(150 203)">
-      <path class="mouth-smile" d="M-17 -3 Q0 15 17 -3" stroke="#b8434f" stroke-width="4.5" fill="none" stroke-linecap="round"/>
-      <g class="mouth-open">
-        <ellipse cx="0" cy="0" rx="17" ry="14" fill="#6e1f2c"/>
-        <g clip-path="url(#mouthclip-{{ key }})">
-          <rect x="-14" y="-15" width="28" height="7" rx="3" fill="#fff"/>
-          <ellipse cx="0" cy="12" rx="11" ry="7" fill="#e8808e"/>
+      <!-- big round nose + cheeks -->
+      <ellipse cx="150" cy="{{ 188 if y else 194 }}" rx="13" ry="11" fill="#f6c28f" stroke-width="5"/>
+      <circle cx="84" cy="{{ 196 if y else 200 }}" r="11" fill="#ff9a9a" stroke="none" opacity=".7"/><circle cx="216" cy="{{ 196 if y else 200 }}" r="11" fill="#ff9a9a" stroke="none" opacity=".7"/>
+
+      <!-- mouth: smile when quiet, opens with the voice -->
+      <g transform="translate(150 {{ 218 if y else 220 }})">
+        <path class="mouth-smile" d="M-22 -2 Q0 18 22 -2" fill="none" stroke-width="5.5"/>
+        <g class="mouth-open">
+          <ellipse cx="0" cy="0" rx="21" ry="16" fill="#e8222e" stroke-width="5.5"/>
+          <g clip-path="url(#mouthclip-{{ key }})" stroke="none">
+            <rect x="-16" y="-17" width="32" height="8" rx="3" fill="#fff"/>
+            <ellipse cx="0" cy="14" rx="12" ry="8" fill="#ff7b86"/>
+          </g>
         </g>
       </g>
     </g>

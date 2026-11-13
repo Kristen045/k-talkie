@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ tutor.name_en }} · K-Talkie{% endblock %}
+{% block content %}
+<main class="chat"
+      data-conv="{{ conv.id }}" data-tutor="{{ conv.tutor }}"
+      data-mode="{{ conv.mode }}" data-role="{{ conv.custom_role or '' }}"
+      data-name="{{ tutor.name_ko }}" data-initial="{{ tutor.initial }}">
+  <div class="chat-head">
+    <span class="avatar {{ conv.tutor }}">{{ tutor.initial }}</span>
+    <div class="who">
+      <strong>{{ tutor.name_ko }} <small>{{ tutor.name_en }}</small></strong>
+      <span id="mode-label" class="my"></span>
+    </div>
+    <div class="head-tools">
+      <label class="switch" title="Show Burmese under each message"><input type="checkbox" id="toggle-my" checked> မြန်မာ</label>
+      <label class="switch" title="Read tutor replies aloud"><input type="checkbox" id="toggle-auto" checked> 🔊 Auto</label>
+    </div>
+  </div>
+
+  <div class="modes small" id="modes">
+    {% for key, m in modes.items() %}
+    <button type="button" class="pill" data-mode="{{ key }}">{{ m.label }}</button>
+    {% endfor %}
+  </div>
+  <div id="custom-box" class="inline" hidden>
+    <input id="custom-role" maxlength="80" placeholder="Role, e.g. cafe waiter">
+    <button id="apply-role" class="primary small">Apply</button>
+  </div>
+
+  <div id="log" class="log" aria-live="polite"></div>
+  <p id="error" class="error" hidden></p>
+
+  <form id="form" class="composer" autocomplete="off">
+    <button type="button" id="mic" class="icon" title="Speak Korean" aria-label="Speak">🎤</button>
+    <input id="text" placeholder="한국어로 말해 보세요… (or type here)" maxlength="1000">
+    <button class="primary" id="send">Send</button>
+  </form>
+  <p class="hint" id="mic-hint" hidden></p>
+</main>
+{% endblock %}
+{% block scripts %}<script src="/static/chat.js"></script>{% endblock %}

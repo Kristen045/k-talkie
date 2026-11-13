@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="container">
+  <section class="hero">
+    <h1>한국어, 말하면서 배워요</h1>
+    <p>Practise speaking Korean with an AI tutor who explains in Burmese.<br>
+       <span class="my">ကိုရီးယားစကားကို AI ဆရာနဲ့ ပြောပြီး လေ့ကျင့်ပါ</span></p>
+  </section>
+
+  <h2 class="step">1 · Choose your tutor <span class="my">ဆရာ ရွေးပါ</span></h2>
+  <div class="tutors" id="tutors">
+    {% for key, t in tutors.items() %}
+    <button type="button" class="tutor-card {{ key }}" data-tutor="{{ key }}" aria-pressed="false">
+      <span class="avatar {{ key }}">{{ t.initial }}</span>
+      <strong>{{ t.name_ko }} <small>{{ t.name_en }}</small></strong>
+      <span>{{ t.blurb }}</span>
+      <span class="my">{{ t.blurb_my }}</span>
+    </button>
+    {% endfor %}
+  </div>
+
+  <h2 class="step">2 · Choose a style <span class="my">ပုံစံ ရွေးပါ</span></h2>
+  <div class="modes" id="modes">
+    {% for key, m in modes.items() %}
+    <button type="button" class="pill {{ 'on' if key == 'teacher' }}" data-mode="{{ key }}">
+      {{ m.label }}<small class="my">{{ m.label_my }}</small>
+    </button>
+    {% endfor %}
+  </div>
+  <div id="custom-box" hidden>
+    <label for="custom-role">Who should your tutor be?</label>
+    <input id="custom-role" maxlength="80" placeholder="e.g. a cafe waiter, a taxi driver, my Korean boss">
+  </div>
+
+  <button id="start" class="primary" disabled>Start talking · 시작하기</button>
+  <p id="error" class="error" hidden></p>
+  <p class="hint">Tip: during a chat you can type <code>now you're a doctor</code> to change the role any time.</p>
+</main>
+{% endblock %}
+{% block scripts %}<script src="/static/home.js"></script>{% endblock %}

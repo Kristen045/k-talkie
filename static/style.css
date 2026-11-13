@@ -1,0 +1,112 @@
+:root {
+  --bg: #fdf8f3; --card: #ffffff; --ink: #2b2530; --muted: #7b7285; --line: #eadfd3;
+  --yuri: #ef6f8f; --yuri-2: #f9a8bd; --joo: #3b82c4; --joo-2: #8cc0ee;
+  --accent: #e8574c; --accent-ink: #fff; --ok: #2e9e6b; --warn: #b7791f;
+  --radius: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #17141b; --card: #221e29; --ink: #f1ecf5; --muted: #a59cb0; --line: #38303f; }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: "Inter", "Noto Sans KR", "Noto Sans Myanmar", system-ui, sans-serif; line-height: 1.5; min-height: 100dvh; }
+a { color: inherit; }
+.my { font-family: "Noto Sans Myanmar", "Padauk", sans-serif; color: var(--muted); font-size: .92em; }
+.muted { color: var(--muted); }
+.nowrap { white-space: nowrap; }
+.hint { color: var(--muted); font-size: .9rem; }
+.error { color: #c0392b; background: #fdecea; border-radius: 10px; padding: 8px 12px; font-size: .92rem; }
+@media (prefers-color-scheme: dark) { .error { background: #3b1f1c; color: #ff9d92; } }
+code { background: var(--line); padding: 1px 6px; border-radius: 6px; }
+
+/* top bar */
+.topbar { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--card); position: sticky; top: 0; z-index: 5; }
+.logo { text-decoration: none; font-weight: 700; font-size: 1.3rem; }
+.logo span { color: var(--accent); }
+.logo small { font-weight: 400; color: var(--muted); font-size: .7rem; margin-left: 4px; }
+nav { display: flex; align-items: center; gap: 16px; font-size: .95rem; }
+nav a { text-decoration: none; color: var(--muted); }
+nav a:hover { color: var(--ink); }
+.badge { font-size: .72rem; padding: 3px 9px; border-radius: 999px; font-weight: 600; }
+.badge.live { background: #dff5ea; color: #1d7a4f; }
+.badge.demo { background: #fdf0d5; color: var(--warn); }
+
+.container { max-width: 760px; margin: 0 auto; padding: 24px 20px 60px; }
+.hero { text-align: center; padding: 18px 0 8px; }
+.hero h1 { font-size: clamp(1.7rem, 5vw, 2.4rem); margin: 0 0 8px; }
+.step { margin: 28px 0 12px; font-size: 1.05rem; }
+
+/* tutors */
+.tutors { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.tutor-card { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; padding: 20px 14px; background: var(--card); border: 2px solid var(--line); border-radius: var(--radius); cursor: pointer; font: inherit; color: inherit; transition: transform .12s, border-color .12s, box-shadow .12s; }
+.tutor-card:hover { transform: translateY(-2px); }
+.tutor-card.yuri.on { border-color: var(--yuri); box-shadow: 0 6px 20px -8px var(--yuri); }
+.tutor-card.joohyuk.on { border-color: var(--joo); box-shadow: 0 6px 20px -8px var(--joo); }
+.tutor-card strong { font-size: 1.2rem; }
+.tutor-card small { font-weight: 400; color: var(--muted); }
+.avatar { display: grid; place-items: center; width: 72px; height: 72px; border-radius: 50%; color: #fff; font-size: 2rem; font-weight: 700; flex: none; font-family: "Noto Sans KR", sans-serif; }
+.avatar.yuri { background: linear-gradient(135deg, var(--yuri-2), var(--yuri)); }
+.avatar.joohyuk { background: linear-gradient(135deg, var(--joo-2), var(--joo)); }
+.avatar.small { width: 36px; height: 36px; font-size: 1.05rem; }
+
+/* pills + inputs + buttons */
+.modes { display: flex; flex-wrap: wrap; gap: 10px; }
+.pill { display: flex; flex-direction: column; align-items: flex-start; padding: 10px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--card); color: inherit; font: inherit; cursor: pointer; }
+.pill small { font-size: .78rem; }
+.pill.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, var(--card)); font-weight: 600; }
+.modes.small .pill { padding: 6px 14px; border-radius: 999px; font-size: .88rem; flex-direction: row; }
+#custom-box { margin: 14px 0 0; }
+#custom-box label { display: block; margin-bottom: 6px; font-size: .92rem; }
+#custom-box.inline { display: flex; gap: 8px; margin: 10px 0 0; }
+#custom-box[hidden] { display: none; }
+input[type=text], input:not([type]) { width: 100%; padding: 12px 14px; border: 2px solid var(--line); border-radius: 12px; background: var(--card); color: var(--ink); font: inherit; }
+input:focus { outline: none; border-color: var(--accent); }
+button.primary { padding: 12px 22px; border: 0; border-radius: 12px; background: var(--accent); color: var(--accent-ink); font: inherit; font-weight: 600; cursor: pointer; }
+button.primary.small { padding: 8px 16px; }
+button.primary:disabled { opacity: .45; cursor: not-allowed; }
+#start { display: block; width: 100%; margin: 28px 0 8px; padding: 16px; font-size: 1.1rem; }
+
+/* chat */
+.chat { max-width: 760px; margin: 0 auto; padding: 12px 16px 16px; display: flex; flex-direction: column; height: calc(100dvh - 58px); }
+.chat-head { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+.chat-head .avatar { width: 46px; height: 46px; font-size: 1.3rem; }
+.who { display: flex; flex-direction: column; line-height: 1.25; flex: 1; min-width: 0; }
+.who small { font-weight: 400; color: var(--muted); }
+.head-tools { display: flex; gap: 12px; font-size: .82rem; }
+.switch { display: flex; align-items: center; gap: 4px; cursor: pointer; color: var(--muted); }
+.log { flex: 1; overflow-y: auto; padding: 14px 4px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+.row { display: flex; align-items: flex-end; gap: 8px; max-width: 100%; }
+.row.user { justify-content: flex-end; }
+.bubble { position: relative; max-width: min(82%, 520px); padding: 10px 14px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); }
+.row.user .bubble { background: var(--accent); color: #fff; border-color: transparent; border-bottom-right-radius: 4px; }
+.row.tutor .bubble { border-bottom-left-radius: 4px; padding-right: 40px; }
+.ko { font-family: "Noto Sans KR", sans-serif; font-size: 1.08rem; }
+.my-line { font-family: "Noto Sans Myanmar", "Padauk", sans-serif; color: var(--muted); font-size: .92rem; margin-top: 4px; padding-top: 4px; border-top: 1px dashed var(--line); }
+.hide-my .my-line { display: none; }
+.tip { margin-top: 6px; padding: 6px 10px; border-radius: 10px; background: #fff7df; color: #7a5a10; font-family: "Noto Sans Myanmar", "Noto Sans KR", sans-serif; font-size: .86rem; }
+@media (prefers-color-scheme: dark) { .tip { background: #3a3220; color: #f1d58b; } }
+.speak { position: absolute; right: 6px; top: 6px; border: 0; background: transparent; cursor: pointer; font-size: 1.05rem; opacity: .65; }
+.speak:hover { opacity: 1; }
+.sys { align-self: center; font-size: .8rem; color: var(--muted); background: var(--line); padding: 3px 12px; border-radius: 999px; }
+.dots { color: var(--muted); letter-spacing: 2px; animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: .35; } }
+
+.composer { display: flex; gap: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+.composer input { flex: 1; }
+.icon { width: 48px; border: 2px solid var(--line); border-radius: 12px; background: var(--card); cursor: pointer; font-size: 1.3rem; }
+.icon.rec { background: #e53935; border-color: #e53935; animation: pulse 1s infinite; }
+
+/* history */
+.history { list-style: none; margin: 18px 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.history li { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+.hist-link { flex: 1; display: flex; align-items: center; gap: 12px; padding: 12px 14px; text-decoration: none; min-width: 0; }
+.hist-text { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.hist-text .muted { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.del { border: 0; background: transparent; cursor: pointer; font-size: 1.1rem; padding: 10px 14px; opacity: .6; }
+.del:hover { opacity: 1; }
+
+@media (max-width: 520px) {
+  .tutors { grid-template-columns: 1fr; }
+  .head-tools { flex-direction: column; gap: 2px; }
+  .topbar { padding: 10px 14px; }
+}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}K-Talkie{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+Myanmar:wght@400;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="logo" href="/">K<span>-</span>Talkie <small>케이토키</small></a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/history">History</a>
+      <span class="badge {{ 'live' if live else 'demo' }}" title="{{ 'Connected to the real AI' if live else 'No API key: scripted demo replies' }}">{{ 'AI live' if live else 'Demo mode' }}</span>
+    </nav>
+  </header>
+  {% block content %}{% endblock %}
+  {% block scripts %}{% endblock %}
+</body>
+</html>

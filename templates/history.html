@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}History · K-Talkie{% endblock %}
+{% block content %}
+<main class="container">
+  <h1>Your conversations <span class="my">စကားပြောမှတ်တမ်း</span></h1>
+  {% if not items %}
+    <p class="hint">Nothing here yet. <a href="/">Start your first chat →</a></p>
+  {% endif %}
+  <ul class="history">
+    {% for c in items %}
+    <li>
+      <a href="/chat/{{ c.id }}" class="hist-link">
+        <span class="avatar small {{ c.tutor }}">{{ tutors[c.tutor].initial }}</span>
+        <span class="hist-text">
+          <strong>{{ tutors[c.tutor].name_ko }} · {{ (c.custom_role if c.mode == 'custom' else modes[c.mode].label) }}</strong>
+          <span class="muted">{{ c.last_text or '' }}</span>
+        </span>
+        <span class="muted nowrap">{{ c.count }} msgs · {{ c.created_at[:16] }}</span>
+      </a>
+      <button class="del" data-id="{{ c.id }}" title="Delete" aria-label="Delete conversation">🗑</button>
+    </li>
+    {% endfor %}
+  </ul>
+</main>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelectorAll('.del').forEach(b => b.addEventListener('click', async () => {
+  if (!confirm('Delete this conversation?')) return;
+  await fetch('/api/conversations/' + b.dataset.id, { method: 'DELETE' });
+  b.closest('li').remove();
+}));
+</script>
+{% endblock %}

@@ -20,13 +20,13 @@
 
     <!-- body -->
     {% if y %}
-    <path d="M60 304 C60 256 100 238 150 238 C200 238 240 256 240 304Z" fill="#ec2a96"/>
-    <path d="M118 240 Q150 270 182 240Z" fill="{{ skin }}"/>
-    <circle cx="150" cy="276" r="6" fill="#ffd21e" stroke-width="4"/>
+    <path d="M60 304 C60 256 100 238 150 238 C200 238 240 256 240 304Z" fill="#f4a8d6"/>
+    <path d="M116 240 Q150 262 184 240 L172 262 Q150 276 128 262Z" fill="#fff"/>
+    <g fill="#fff"><path d="M150 266 L120 252 Q112 266 120 282 Z"/><path d="M150 266 L180 252 Q188 266 180 282 Z"/><ellipse cx="150" cy="266" rx="9" ry="10"/></g>
     {% else %}
-    <path d="M60 304 C60 256 100 238 150 238 C200 238 240 256 240 304Z" fill="#2fdc3a"/>
+    <path d="M60 304 C60 256 100 238 150 238 C200 238 240 256 240 304Z" fill="#46e04a"/>
     <path d="M116 240 Q150 266 184 240Z" fill="{{ skin }}"/>
-    <path d="M116 240 L130 264 L150 248 L170 264 L184 240" fill="#25c030"/>
+    <path d="M114 240 L128 266 L150 250 L172 266 L186 240 Q150 250 114 240Z" fill="#37c83c"/>
     {% endif %}
 
     <g class="part" data-name="head" style="transform-origin: 150px 226px">
@@ -45,7 +45,7 @@
       <path d="M62 138 C54 50 108 22 152 24 C202 24 248 54 240 138 C226 100 198 82 162 80 C126 90 92 100 62 138Z" fill="#111"/>
       <path d="M100 52 Q140 38 184 50" stroke="#555" stroke-width="5" fill="none"/>
       <circle cx="68" cy="130" r="10" fill="#ff4fa8"/><circle cx="232" cy="130" r="10" fill="#ff4fa8"/>
-      <path d="M196 60 q8 -12 16 0 q8 -12 16 0 q0 12 -16 24 q-16 -12 -16 -24z" fill="#ff4fa8" stroke-width="4" transform="translate(-6 4) scale(.9)"/>
+      <g transform="translate(88 70)" stroke-width="3.5"><g fill="#fff"><circle cx="0" cy="-11" r="8"/><circle cx="10.5" cy="-3.5" r="8"/><circle cx="6.5" cy="9" r="8"/><circle cx="-6.5" cy="9" r="8"/><circle cx="-10.5" cy="-3.5" r="8"/></g><circle r="6" fill="#ffd21e"/></g>
       {% else %}
       <path d="M62 140 C54 112 66 98 86 96 L92 134Z M238 140 C246 112 234 98 214 96 L208 134Z" fill="#111"/>
       <path d="M60 116 C52 52 100 18 150 18 C200 18 248 52 240 116 C206 104 94 104 60 116Z" fill="#f7b3dc"/>
@@ -56,23 +56,24 @@
       {% endif %}
 
       <!-- eyebrows -->
-      <g class="brow" fill="none" stroke-width="7">
-        <path d="M92 {{ 124 if y else 146 }} Q112 {{ 112 if y else 134 }} 134 {{ 120 if y else 142 }}"/><path d="M166 {{ 120 if y else 142 }} Q188 {{ 112 if y else 134 }} 208 {{ 124 if y else 146 }}"/>
+      <g class="brow" fill="none" stroke-width="{{ 5 if y else 8 }}">
+        <path d="M90 {{ 126 if y else 148 }} Q112 {{ 108 if y else 136 }} 136 {{ 118 if y else 144 }}"/><path d="M164 {{ 118 if y else 144 }} Q188 {{ 108 if y else 136 }} 210 {{ 126 if y else 148 }}"/>
       </g>
 
       <!-- big round eyes looking straight at you -->
       {% for cx in [114, 186] %}
       <g transform="translate({{ cx }} {{ 156 if y else 168 }})"><g class="eye">
-        <ellipse cx="0" cy="0" rx="22" ry="24" fill="#fff"/>
-        <g class="iris"><circle cx="0" cy="1" r="10" fill="#111" stroke="none"/><circle cx="-3.5" cy="-3" r="3.6" fill="#fff" stroke="none"/></g>
+        <ellipse cx="0" cy="0" rx="{{ 21 if y else 22 }}" ry="{{ 24 if y else 25 }}" fill="#fff"/>
+        <g class="iris"><circle cx="0" cy="2" r="{{ 8.5 if y else 6 }}" fill="#111" stroke="none"/><circle cx="-2.5" cy="-1.5" r="{{ 3 if y else 2.2 }}" fill="#fff" stroke="none"/></g>
+        {% if y %}<path d="M-22 -3 Q0 -30 22 -3" fill="none" stroke-width="5"/><path d="M{{ -22 if cx == 114 else 22 }} -3 l{{ -7 if cx == 114 else 7 }} -5" fill="none" stroke-width="4"/>{% endif %}
       </g></g>
       {% endfor %}
 
-      <ellipse cx="150" cy="{{ 186 if y else 192 }}" rx="12" ry="10" fill="#f6c28f" stroke-width="5"/>
+      {% if y %}<path d="M144 184 Q150 193 157 185" fill="none" stroke-width="5"/>{% else %}<ellipse cx="150" cy="194" rx="15" ry="13" fill="#f6c28f" stroke-width="5.5"/>{% endif %}
       <circle cx="84" cy="{{ 196 if y else 202 }}" r="11" fill="#ff9a9a" stroke="none" opacity=".7"/><circle cx="216" cy="{{ 196 if y else 202 }}" r="11" fill="#ff9a9a" stroke="none" opacity=".7"/>
 
       <!-- mouth: smile when quiet, opens with the voice -->
-      <g transform="translate(150 {{ 212 if y else 216 }})">
+      <g transform="translate(150 {{ 214 if y else 222 }})">
         <path class="mouth-smile" d="M-27 -3 Q0 24 27 -3" fill="none" stroke-width="6.5"/>
         <g class="mouth-open">
           <ellipse cx="0" cy="0" rx="22" ry="17" fill="#e8222e" stroke-width="5.5"/>

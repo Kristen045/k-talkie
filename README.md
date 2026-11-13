@@ -6,7 +6,7 @@ Talk with an AI tutor who speaks **only Korean and Burmese**.
 - **Two tutors:** Yuri (유리) and Joohyuk (주혁)
 - **Three styles:** polite teacher (default), friendly friend, custom role
   (type `now you're a cafe waiter` any time)
-- **Video-call lesson (simple icon avatars):** a cartoon tutor on top (Yuri = female voice, Joohyuk = male voice, mouth moves with the audio), your own webcam below (never uploaded), and a live script on the right.
+- **Video-call lesson (animated cartoon tutors):** a cartoon tutor on top (Yuri = female voice, Joohyuk = male voice, mouth moves with the audio), your own webcam below (never uploaded), and a live script on the right.
 - **Spoken = Korean only.** Burmese appears only as written text: a translation under every line, and the explanations.
 - **Grammar check:** every sentence you say gets a score (0–100); a mistake shows ❌ wrong → ✅ right with a short 💡 reason in Burmese.
 - **History:** every conversation is saved and can be reopened
@@ -52,3 +52,13 @@ If the voice service can't be reached, the app falls back to the browser's built
 ## Using your own character artwork
 Drop `yuri.png` and/or `joohyuk.png` into `static/characters/` (see the README.txt there). They replace the
 built-in drawings and bounce/glow with the tutor's voice. Only use artwork you have permission to use, and credit the creator.
+
+## Animated tutors (puppets)
+The tutors are front-facing cartoon pictures (made with an AI image generator) that the page animates: a mouth that opens
+with the voice, blinking, a nodding head, waving hands, slow breathing while listening.
+To change a tutor, make a new front-facing picture with a plain background and run:
+```bash
+python tools/make_puppet.py --name yuri --src my_girl.png        # girl layout
+python tools/make_puppet.py --name joohyuk --src my_boy.png       # boy layout
+```
+(needs `pip install opencv-python-headless pillow`). Bigger pictures (1000px+) look sharper.

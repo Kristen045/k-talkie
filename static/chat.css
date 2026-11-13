@@ -216,3 +216,20 @@
 .stage[data-state=listening] .orb-ring.r2 { animation-delay: 1.2s; }
 @keyframes orb-ripple { from { transform: scale(1); opacity: .7; } to { transform: scale(1.6); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .stage[data-state=listening] .orb-ring { animation: none; } }
+
+/* talking mouth + blinking eyelids drawn over the picture (they move with the head) */
+.face-overlay { overflow: visible; }
+.face-overlay .lid { transform-box: view-box; transform: scaleY(0); animation: lid-blink 4.2s infinite; }
+.face-overlay .lid + .lid { animation-delay: 0s; }
+@keyframes lid-blink { 0%, 91%, 100% { transform: scaleY(0); } 93.5%, 96% { transform: scaleY(1); } }
+.face-overlay .m-smile { opacity: clamp(0, calc(1 - (var(--lvl) - 0.04) * 14), 1); }
+.face-overlay .m-open { transform-box: fill-box; transform-origin: 50% 20%; opacity: clamp(0, calc((var(--lvl) - 0.05) * 14), 1);
+  transform: scaleY(calc(.25 + var(--lvl) * 1.1)) scaleX(calc(.8 + var(--lvl) * .35)); transition: transform .05s linear; }
+.stage.talking.fake .face-overlay .m-open { animation: flap .2s ease-in-out infinite alternate; opacity: 1; }
+.stage.talking.fake .face-overlay .m-smile { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .face-overlay .lid { animation: none; } }
+
+/* sunset scene behind the picture tutors */
+.tutor-tile.yuri, .tutor-tile.joohyuk { background: #e9b778; }
+.tutor-tile .face-wrap, .tutor-tile .orb-wrap { z-index: 2; }
+.face-wrap.has-rig { filter: drop-shadow(0 4px 5px rgba(60, 30, 10, .25)); }

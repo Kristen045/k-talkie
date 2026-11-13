@@ -10,13 +10,40 @@
   <!-- LEFT: you and the tutor, like a video call -->
   <section class="call">
     <div class="tile tutor-tile {{ conv.tutor }}">
+      {% include "_scene.html" %}
       <div class="chip name-chip"><strong>{{ tutor.name_ko }}</strong> {{ tutor.name_en }} · <span id="mode-label"></span></div>
       <div class="chip state-chip" id="state">Tap Talk to start</div>
       <div class="think" aria-hidden="true"><i></i><i></i><i></i></div>
+      {% if rig %}
+      <div class="face-wrap has-rig{% if not rig.stand %} bust{% endif %}" id="face">
+        <div class="puppet" style="aspect-ratio: {{ rig.ratio }}">
+          {% for l in rig.layers %}<img class="layer" data-name="{{ l.name }}" src="{{ l.src }}" alt="" style="transform-origin: {{ l.origin }}">{% endfor %}
+          {% if rig.face %}{% set f = rig.face %}{% set r = f.mouth.r %}
+          <svg class="layer face-overlay" data-name="mouth" viewBox="0 0 {{ rig.w }} {{ rig.h }}" style="transform-origin: {{ f.origin }}" aria-hidden="true">
+            {% for e in f.eyes %}
+            <g class="lid" style="transform-origin: {{ e.x }}px {{ e.y - e.ry }}px">
+              <ellipse cx="{{ e.x }}" cy="{{ e.y }}" rx="{{ e.rx * 1.08 }}" ry="{{ e.ry * 1.08 }}" fill="{{ f.skin }}"/>
+              <path d="M{{ e.x - e.rx * 0.85 }} {{ e.y }} Q{{ e.x }} {{ e.y + e.ry * 0.45 }} {{ e.x + e.rx * 0.85 }} {{ e.y }}" fill="none" stroke="#3a2428" stroke-width="{{ e.rx * 0.16 }}" stroke-linecap="round"/>
+            </g>
+            {% endfor %}
+            <g transform="translate({{ f.mouth.x }} {{ f.mouth.y }})">
+              <path class="m-smile" d="M{{ -r }} 0 Q0 {{ r * 0.95 }} {{ r }} 0" fill="none" stroke="#6e2f36" stroke-width="{{ r * 0.2 }}" stroke-linecap="round"/>
+              <g class="m-open">
+                <ellipse rx="{{ r * 0.8 }}" ry="{{ r * 0.7 }}" fill="#8f2f40" stroke="#4a2a2a" stroke-width="{{ r * 0.16 }}"/>
+                <clipPath id="mclip"><ellipse rx="{{ r * 0.8 }}" ry="{{ r * 0.7 }}"/></clipPath>
+                <g clip-path="url(#mclip)">{% if f.mouth.teeth %}<rect x="{{ -r * 0.8 }}" y="{{ -r * 0.72 }}" width="{{ r * 1.6 }}" height="{{ r * 0.32 }}" fill="#fff"/>{% endif %}<ellipse cx="0" cy="{{ r * 0.5 }}" rx="{{ r * 0.5 }}" ry="{{ r * 0.3 }}" fill="#ff8fa3"/></g>
+              </g>
+            </g>
+          </svg>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
       <div class="orb-wrap" id="face">
         <div class="orb-ring r1"></div><div class="orb-ring r2"></div>
         <div class="orb"><span class="orb-letter">{{ tutor.initial }}</span></div>
       </div>
+      {% endif %}
 
     </div>
 

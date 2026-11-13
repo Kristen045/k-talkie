@@ -1,0 +1,65 @@
+{
+ "size": [
+  562,
+  575
+ ],
+ "thumb": "full.png",
+ "stand": false,
+ "layers": [
+  {
+   "name": "body",
+   "src": "body.png"
+  },
+  {
+   "name": "handL",
+   "src": "handL.png",
+   "pivot": [
+    95.0,
+    434.0
+   ]
+  },
+  {
+   "name": "handR",
+   "src": "handR.png",
+   "pivot": [
+    467.0,
+    434.0
+   ]
+  },
+  {
+   "name": "head",
+   "src": "head.png",
+   "pivot": [
+    281.0,
+    359.0
+   ]
+  }
+ ],
+ "face": {
+  "pivot": [
+   281.0,
+   359.0
+  ],
+  "skin": "#fed3b0",
+  "mouth": {
+   "x": 281.0,
+   "y": 290.0,
+   "r": 33.0,
+   "teeth": false
+  },
+  "eyes": [
+   {
+    "x": 221.0,
+    "y": 221.0,
+    "rx": 42.0,
+    "ry": 51.0
+   },
+   {
+    "x": 341.0,
+    "y": 221.0,
+    "rx": 42.0,
+    "ry": 51.0
+   }
+  ]
+ }
+}

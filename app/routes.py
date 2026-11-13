@@ -19,27 +19,36 @@ router = APIRouter()
 CHAR_DIR = Path(__file__).resolve().parent.parent / "static" / "characters"
 
 
+TUTOR_DIR = Path(__file__).resolve().parent.parent / "static" / "tutors"
+
+
 def _custom_rigs() -> dict:
-    """A 'puppet' = artwork cut into pieces (body, arms, head) that move separately.
-    Lives in static/characters/<tutor>/rig.json (see static/characters/README.txt)."""
+    """A 'puppet' = one front-facing picture cut into pieces (body, hands, head) that move separately.
+    Made by tools/make_puppet.py into static/tutors/<tutor>/ (or static/characters/<tutor>/ as your own override)."""
     rigs = {}
     for key in TUTORS:
-        f = CHAR_DIR / key / "rig.json"
-        if not f.exists():
-            continue
-        try:
-            d = json.loads(f.read_text(encoding="utf-8"))
-            w, h = d["size"]
-            rigs[key] = {
-                "ratio": f"{w} / {h}",
-                "stand": bool(d.get("stand", True)),   # False = waist-up artwork: cut off by the bottom of the box
-                "thumb": f"/static/characters/{key}/{d.get('thumb', 'full.png')}",
-                "layers": [{"name": l["name"], "src": f"/static/characters/{key}/{l['src']}",
-                            "origin": (f"{l['pivot'][0] / w * 100:.2f}% {l['pivot'][1] / h * 100:.2f}%"
-                                       if "pivot" in l else "50% 100%")} for l in d["layers"]],
-            }
-        except (ValueError, KeyError, OSError):
-            continue
+        for base, url in ((CHAR_DIR, "/static/characters"), (TUTOR_DIR, "/static/tutors")):
+            f = base / key / "rig.json"
+            if not f.exists():
+                continue
+            try:
+                d = json.loads(f.read_text(encoding="utf-8"))
+                w, h = d["size"]
+                pct = lambda pv: f"{pv[0] / w * 100:.2f}% {pv[1] / h * 100:.2f}%"
+                rig = {
+                    "ratio": f"{w} / {h}", "w": w, "h": h,
+                    "stand": bool(d.get("stand", True)),
+                    "thumb": f"{url}/{key}/{d.get('thumb', 'full.png')}",
+                    "layers": [{"name": l["name"], "src": f"{url}/{key}/{l['src']}",
+                                "origin": pct(l["pivot"]) if "pivot" in l else "50% 100%"} for l in d["layers"]],
+                    "face": d.get("face"),
+                }
+                if rig["face"]:
+                    rig["face"]["origin"] = pct(rig["face"]["pivot"])
+                rigs[key] = rig
+                break
+            except (ValueError, KeyError, OSError):
+                continue
     return rigs
 
 

@@ -231,8 +231,10 @@ function puppetStep(t, speaking) {
   const k = 1 - Math.exp(-dt * 10);     // exponential smoothing = no sudden jumps between states
   for (const key in g) cur[key] += (g[key] - cur[key]) * k;
   puppet.style.transform = `translate3d(0, ${cur.bob.toFixed(2)}px, 0) rotate(${cur.rot.toFixed(2)}deg) scale(${cur.sx.toFixed(4)}, ${cur.sy.toFixed(4)})`;
-  if (PL.head) PL.head.style.transform = `translate3d(0, ${cur.hy.toFixed(2)}px, 0) rotate(${cur.hr.toFixed(2)}deg)`;
-  const gain = isSvg ? 3 : 1, lift = isSvg ? cur.ao : 0;     // SVG arms swing wider and lift the hands up
+  const headT = `translate3d(0, ${cur.hy.toFixed(2)}px, 0) rotate(${cur.hr.toFixed(2)}deg)`;
+  if (PL.head) PL.head.style.transform = headT;
+  if (PL.mouth) PL.mouth.style.transform = headT;     // talking mouth + eyelids ride on the head
+  const gain = (isSvg || PL.mouth) ? 3 : 1, lift = isSvg ? cur.ao : 0;     // SVG arms swing wider and lift the hands up
   if (PL.armL) PL.armL.style.transform = `rotate(${(cur.al * gain + lift).toFixed(2)}deg)`;
   if (PL.armR) PL.armR.style.transform = `rotate(${(cur.ar * gain - lift).toFixed(2)}deg)`;
   if (shadowEl) shadowEl.style.setProperty('--shadow', (cur.sh * (1 + cur.bob / 70)).toFixed(3));

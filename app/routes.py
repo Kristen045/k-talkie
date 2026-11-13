@@ -32,6 +32,7 @@ def _custom_rigs() -> dict:
             w, h = d["size"]
             rigs[key] = {
                 "ratio": f"{w} / {h}",
+                "stand": bool(d.get("stand", True)),   # False = waist-up artwork: cut off by the bottom of the box
                 "thumb": f"/static/characters/{key}/{d.get('thumb', 'full.png')}",
                 "layers": [{"name": l["name"], "src": f"/static/characters/{key}/{l['src']}",
                             "origin": (f"{l['pivot'][0] / w * 100:.2f}% {l['pivot'][1] / h * 100:.2f}%"

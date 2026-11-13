@@ -205,8 +205,8 @@ function stopSpeaking() {
 const wave = $('#wave'), wctx = wave.getContext('2d');
 // ---- puppet (cut-out artwork): smooth idle / listening / thinking / speaking motion
 // Works for picture puppets (.puppet .layer) AND for the drawn SVG tutors (.face .part), same motion code.
-const puppet = document.querySelector('.puppet') || document.querySelector('.face .root');
-const isSvg = !document.querySelector('.puppet') && !!puppet;
+const puppet = document.querySelector('.puppet') || document.querySelector('.face .root') || document.querySelector('.orb');
+const isSvg = !!document.querySelector('.face .root');
 const shadowEl = document.querySelector('.has-rig .shadow');
 const PL = {}; document.querySelectorAll('.puppet .layer, .face .part').forEach((e) => { PL[e.dataset.name] = e; }); delete PL.root;
 const cur = { bob: 0, sy: 1, sx: 1, rot: 0, hr: 0, hy: 0, al: 0, ar: 0, sh: 1, ao: 0 };

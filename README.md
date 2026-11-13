@@ -6,7 +6,7 @@ Talk with an AI tutor who speaks **only Korean and Burmese**.
 - **Two tutors:** Yuri (유리) and Joohyuk (주혁)
 - **Three styles:** polite teacher (default), friendly friend, custom role
   (type `now you're a cafe waiter` any time)
-- **Video-call lesson:** a cartoon tutor on top (Yuri = female voice, Joohyuk = male voice, mouth moves with the audio), your own webcam below (never uploaded), and a live script on the right.
+- **Video-call lesson (simple icon avatars):** a cartoon tutor on top (Yuri = female voice, Joohyuk = male voice, mouth moves with the audio), your own webcam below (never uploaded), and a live script on the right.
 - **Spoken = Korean only.** Burmese appears only as written text: a translation under every line, and the explanations.
 - **Grammar check:** every sentence you say gets a score (0–100); a mistake shows ❌ wrong → ✅ right with a short 💡 reason in Burmese.
 - **History:** every conversation is saved and can be reopened

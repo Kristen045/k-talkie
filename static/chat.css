@@ -197,3 +197,22 @@
 .face-wrap:not(.has-rig):not(.has-img) { bottom: 2px; height: 86%; max-width: 98%; }
 .face .head, .stage.talking .face .head, .stage[data-state=listening] .face .head, .stage[data-state=thinking] .face .head { animation: none; transform: none; }
 .face-wrap .face { filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .10)); }
+
+/* ===== Simple icon avatars: a clean circle with the tutor's initial; the rings follow the voice ===== */
+.tutor-tile.yuri { background: radial-gradient(110% 90% at 30% 15%, #ff9ec4 0%, #c85a9c 55%, #6c3a8a 100%); }
+.tutor-tile.joohyuk { background: radial-gradient(110% 90% at 70% 15%, #8fd0ff 0%, #4a86d8 55%, #2d3f92 100%); }
+.orb-wrap { --lvl: 0; position: absolute; inset: 0; display: grid; place-items: center; }
+.orb, .orb-ring { grid-area: 1 / 1; width: clamp(110px, 38%, 170px); aspect-ratio: 1; border-radius: 50%; }
+.orb { display: grid; place-items: center; color: #fff; font-family: "Noto Sans KR", sans-serif; font-weight: 700; font-size: clamp(46px, 7vw, 72px);
+  background: linear-gradient(145deg, rgba(255, 255, 255, .38), rgba(255, 255, 255, .12)); border: 3px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 14px 34px rgba(20, 10, 50, .35), inset 0 2px 10px rgba(255, 255, 255, .35); backdrop-filter: blur(4px); will-change: transform; }
+.orb-letter { text-shadow: 0 3px 10px rgba(20, 10, 50, .35); }
+.orb-ring { border: 3px solid rgba(255, 255, 255, .6); opacity: 0; pointer-events: none; }
+/* speaking: the rings expand with the loudness of the voice */
+.stage.talking .orb-ring.r1 { opacity: calc(.25 + var(--lvl) * .6); transform: scale(calc(1.14 + var(--lvl) * .38)); }
+.stage.talking .orb-ring.r2 { opacity: calc(.12 + var(--lvl) * .4); transform: scale(calc(1.3 + var(--lvl) * .7)); }
+/* listening: calm green ripple */
+.stage[data-state=listening] .orb-ring { border-color: rgba(120, 240, 180, .75); animation: orb-ripple 2.4s ease-out infinite; }
+.stage[data-state=listening] .orb-ring.r2 { animation-delay: 1.2s; }
+@keyframes orb-ripple { from { transform: scale(1); opacity: .7; } to { transform: scale(1.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .stage[data-state=listening] .orb-ring { animation: none; } }

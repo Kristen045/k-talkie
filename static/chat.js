@@ -204,9 +204,12 @@ function stopSpeaking() {
 // ---- one animation loop: lip-sync, subtitle reveal, waveform
 const wave = $('#wave'), wctx = wave.getContext('2d');
 // ---- puppet (cut-out artwork): smooth idle / listening / thinking / speaking motion
-const puppet = document.querySelector('.puppet'), shadowEl = document.querySelector('.has-rig .shadow');
-const PL = {}; document.querySelectorAll('.puppet .layer').forEach((e) => { PL[e.dataset.name] = e; });
-const cur = { bob: 0, sy: 1, sx: 1, rot: 0, hr: 0, hy: 0, al: 0, ar: 0, sh: 1 };
+// Works for picture puppets (.puppet .layer) AND for the drawn SVG tutors (.face .part), same motion code.
+const puppet = document.querySelector('.puppet') || document.querySelector('.face .root');
+const isSvg = !document.querySelector('.puppet') && !!puppet;
+const shadowEl = document.querySelector('.has-rig .shadow');
+const PL = {}; document.querySelectorAll('.puppet .layer, .face .part').forEach((e) => { PL[e.dataset.name] = e; }); delete PL.root;
+const cur = { bob: 0, sy: 1, sx: 1, rot: 0, hr: 0, hy: 0, al: 0, ar: 0, sh: 1, ao: 0 };
 let lastT = 0;
 function puppetStep(t, speaking) {
   const dt = Math.min(0.05, (t - lastT) / 1000 || 0.016); lastT = t;
@@ -214,23 +217,24 @@ function puppetStep(t, speaking) {
   let g;
   if (speaking) {                       // gentle bounce, nodding head, waving arms
     g = { bob: -(Math.abs(Math.sin(s * 6.5)) * 3 + v * 8), sy: 1 + v * 0.03, sx: 1 - v * 0.012, rot: Math.sin(s * 3.1) * 1.1,
-          hr: Math.sin(s * 4.6) * 2 + v * 3, hy: -v * 4, al: Math.sin(s * 5.6) * (3 + v * 3), ar: -Math.sin(s * 5.6 + 1.2) * (2.5 + v * 3), sh: 1 - v * 0.18 };
+          hr: Math.sin(s * 4.6) * 2 + v * 3, hy: -v * 4, al: Math.sin(s * 5.6) * (3 + v * 3), ar: -Math.sin(s * 5.6 + 1.2) * (2.5 + v * 3), sh: 1 - v * 0.18, ao: 12 };
   } else if (state === 'listening') {   // slow breathing 1.00 -> 1.02, head tilts like she is paying attention
     const b = (Math.sin(s * 1.57) + 1) / 2;
     g = { bob: 0, sy: 1 + b * 0.02, sx: 1 + b * 0.02, rot: Math.sin(s * 0.9) * 0.7, hr: Math.sin(s * 0.7) * 3.5, hy: 0,
-          al: Math.sin(s * 1.1) * 2, ar: -Math.sin(s * 1.1 + 1) * 2, sh: 1 };
+          al: Math.sin(s * 1.1) * 2, ar: -Math.sin(s * 1.1 + 1) * 2, sh: 1, ao: 3 };
   } else if (state === 'thinking') {
-    g = { bob: 0, sy: 1 + 0.008 * Math.sin(s * 2), sx: 1, rot: 0, hr: 6 + Math.sin(s * 1.4) * 1.5, hy: 0, al: Math.sin(s * 1.5) * 2, ar: -2, sh: 1 };
+    g = { bob: 0, sy: 1 + 0.008 * Math.sin(s * 2), sx: 1, rot: 0, hr: 6 + Math.sin(s * 1.4) * 1.5, hy: 0, al: Math.sin(s * 1.5) * 2, ar: -2, sh: 1, ao: 4 };
   } else {                              // idle
     const b = (Math.sin(s * 1.2) + 1) / 2;
-    g = { bob: 0, sy: 1 + b * 0.012, sx: 1, rot: 0, hr: Math.sin(s * 0.6) * 1.5, hy: 0, al: Math.sin(s * 0.8) * 1.5, ar: -Math.sin(s * 0.8) * 1.5, sh: 1 };
+    g = { bob: 0, sy: 1 + b * 0.012, sx: 1, rot: 0, hr: Math.sin(s * 0.6) * 1.5, hy: 0, al: Math.sin(s * 0.8) * 1.5, ar: -Math.sin(s * 0.8) * 1.5, sh: 1, ao: 1 };
   }
   const k = 1 - Math.exp(-dt * 10);     // exponential smoothing = no sudden jumps between states
   for (const key in g) cur[key] += (g[key] - cur[key]) * k;
   puppet.style.transform = `translate3d(0, ${cur.bob.toFixed(2)}px, 0) rotate(${cur.rot.toFixed(2)}deg) scale(${cur.sx.toFixed(4)}, ${cur.sy.toFixed(4)})`;
   if (PL.head) PL.head.style.transform = `translate3d(0, ${cur.hy.toFixed(2)}px, 0) rotate(${cur.hr.toFixed(2)}deg)`;
-  if (PL.armL) PL.armL.style.transform = `rotate(${cur.al.toFixed(2)}deg)`;
-  if (PL.armR) PL.armR.style.transform = `rotate(${cur.ar.toFixed(2)}deg)`;
+  const gain = isSvg ? 3 : 1, lift = isSvg ? cur.ao : 0;     // SVG arms swing wider and lift the hands up
+  if (PL.armL) PL.armL.style.transform = `rotate(${(cur.al * gain + lift).toFixed(2)}deg)`;
+  if (PL.armR) PL.armR.style.transform = `rotate(${(cur.ar * gain - lift).toFixed(2)}deg)`;
   if (shadowEl) shadowEl.style.setProperty('--shadow', (cur.sh * (1 + cur.bob / 70)).toFixed(3));
 }
 

@@ -1,3 +1,8 @@
+NOTE: the app now shows its own front-facing cartoon tutors by default (they look straight at you, move their
+mouth with the voice, blink, nod and gesture with their hands).
+Files/folders in here OVERRIDE them. If you unzipped picture puppets (yuri/ or joohyuk/ folders, yuri.png...)
+and want the front-facing drawn tutors back, just delete those folders/files.
+
 Put your own tutor artwork here to replace the built-in cartoon faces:
 
   yuri.png      (the girl tutor)

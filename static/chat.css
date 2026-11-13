@@ -29,8 +29,8 @@
 .face .iris { transition: transform .25s; }
 .stage.talking .face .head { transform-origin: 50% 90%; }
 .face .brow { transition: transform .15s; transform: translateY(calc(var(--lvl) * -5px)); }
-.face .mouth-smile { opacity: max(0, calc(1 - var(--lvl) * 10)); }
-.face .mouth-open { transform-box: fill-box; transform-origin: center; transform: scaleY(calc(.06 + var(--lvl) * 1.25)) scaleX(calc(.8 + var(--lvl) * .2)); opacity: min(1, calc(var(--lvl) * 12)); transition: transform .05s linear; }
+.face .mouth-smile { opacity: clamp(0, calc(1 - (var(--lvl) - 0.04) * 14), 1); }
+.face .mouth-open { transform-box: fill-box; transform-origin: center; transform: scaleY(calc(.06 + var(--lvl) * 1.25)) scaleX(calc(.8 + var(--lvl) * .2)); opacity: clamp(0, calc((var(--lvl) - 0.05) * 14), 1); transition: transform .05s linear; }
 .stage.talking .face .head { animation: none; transform: translateY(calc(var(--lvl) * -5px)) rotate(calc(var(--lvl) * 1.2deg)); }
 .stage.talking.fake .face .mouth-open { animation: flap .2s ease-in-out infinite alternate; opacity: 1; }
 .stage.talking.fake .face .mouth-smile { opacity: 0; }
@@ -191,3 +191,9 @@
 .face-wrap.has-rig.bust { top: 15%; bottom: 0; }
 .face-wrap.has-rig.bust .shadow { display: none; }
 .face-wrap.has-rig.bust .puppet { height: 100%; }
+
+/* ===== drawn front-facing tutors (video-call style) ===== */
+.face .part { transform-box: view-box; will-change: transform; }
+.face-wrap:not(.has-rig):not(.has-img) { bottom: 2px; height: 86%; max-width: 98%; }
+.face .head, .stage.talking .face .head, .stage[data-state=listening] .face .head, .stage[data-state=thinking] .face .head { animation: none; transform: none; }
+.face-wrap .face { filter: drop-shadow(0 6px 0 rgba(0, 0, 0, .10)); }

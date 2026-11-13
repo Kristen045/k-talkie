@@ -1,0 +1,27 @@
+{# Sunset savanna backdrop (original drawing): sky, drifting clouds, layered hills, acacia trees. #}
+<svg class="scene" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e3a86a"/><stop offset=".55" stop-color="#f3cf94"/><stop offset="1" stop-color="#f8e3b8"/>
+    </linearGradient>
+    <radialGradient id="sunglow"><stop offset="0" stop-color="#fff6d6" stop-opacity=".95"/><stop offset="1" stop-color="#fff6d6" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#sky)"/>
+  <circle cx="290" cy="215" r="90" fill="url(#sunglow)"/>
+  <circle cx="290" cy="215" r="30" fill="#fff3cf"/>
+
+  <g class="cloud c1" fill="#fff" opacity=".92"><ellipse cx="70" cy="70" rx="46" ry="16"/><ellipse cx="46" cy="76" rx="26" ry="14"/><ellipse cx="98" cy="78" rx="30" ry="13"/><ellipse cx="72" cy="58" rx="24" ry="14"/></g>
+  <g class="cloud c2" fill="#fff" opacity=".85"><ellipse cx="300" cy="120" rx="42" ry="14"/><ellipse cx="276" cy="126" rx="24" ry="12"/><ellipse cx="326" cy="127" rx="26" ry="11"/><ellipse cx="302" cy="109" rx="22" ry="12"/></g>
+
+  <!-- layered hills -->
+  <path d="M0 250 C60 220 110 232 170 214 C230 196 300 226 400 205 L400 400 L0 400Z" fill="#b99aa6"/>
+  <path d="M0 285 C70 262 130 240 200 250 C260 258 310 240 400 262 L400 400 L0 400Z" fill="#cf8a5e"/>
+  <path d="M0 320 C80 300 150 310 230 296 C300 284 350 300 400 292 L400 400 L0 400Z" fill="#8a5a47"/>
+  <!-- dark foreground with acacia trees -->
+  <path d="M0 345 C100 335 200 350 400 338 L400 400 L0 400Z" fill="#33231f"/>
+  <g fill="#33231f">
+    <g transform="translate(70 345)"><rect x="-2" y="-34" width="4" height="34"/><ellipse cx="0" cy="-38" rx="26" ry="9"/><ellipse cx="-10" cy="-44" rx="14" ry="6"/></g>
+    <g transform="translate(330 340)"><rect x="-2" y="-40" width="4" height="40"/><ellipse cx="0" cy="-44" rx="30" ry="10"/><ellipse cx="12" cy="-51" rx="16" ry="6"/></g>
+    <g transform="translate(195 346) scale(.7)"><rect x="-2" y="-34" width="4" height="34"/><ellipse cx="0" cy="-38" rx="26" ry="9"/></g>
+  </g>
+</svg>

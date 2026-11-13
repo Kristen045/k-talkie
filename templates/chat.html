@@ -11,7 +11,7 @@
   <!-- LEFT: you and the tutor, like a video call -->
   <section class="call">
     <div class="tile tutor-tile {{ conv.tutor }}">
-      <div class="bokeh"><i></i><i></i><i></i><i></i></div>
+      {% include "_scene.html" %}
       <div class="chip name-chip"><strong>{{ tutor.name_ko }}</strong> {{ tutor.name_en }} · <span id="mode-label"></span></div>
       <div class="chip state-chip" id="state">Tap Talk to start</div>
       <div class="think" aria-hidden="true"><i></i><i></i><i></i></div>

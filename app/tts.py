@@ -2,10 +2,10 @@
 
 We use Microsoft's neural Korean voices through the free `edge-tts` package (no API key):
   * Yuri    -> ko-KR-SunHiNeural            (female)
-  * Joohyuk -> ko-KR-HyunsuMultilingualNeural (male)
+  * Joohyuk -> ko-KR-InJoonNeural (male)
 Every sentence is saved in data/tts_cache/, so a repeated sentence is instant and free.
 Change a voice without touching code:  KTALKIE_VOICE_YURI=...  KTALKIE_VOICE_JOOHYUK=...
-(other male choice: ko-KR-InJoonNeural)
+(other male choice: ko-KR-HyunsuMultilingualNeural)
 """
 import asyncio
 import hashlib
@@ -16,7 +16,7 @@ import edge_tts
 
 VOICES = {
     "yuri": os.getenv("KTALKIE_VOICE_YURI", "ko-KR-SunHiNeural"),
-    "joohyuk": os.getenv("KTALKIE_VOICE_JOOHYUK", "ko-KR-HyunsuMultilingualNeural"),
+    "joohyuk": os.getenv("KTALKIE_VOICE_JOOHYUK", "ko-KR-InJoonNeural"),
 }
 RATE = {"yuri": "-6%", "joohyuk": "-6%"}   # a little slower, easier for learners
 CACHE_DIR = Path(__file__).resolve().parent.parent / "data" / "tts_cache"

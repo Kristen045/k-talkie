@@ -45,5 +45,5 @@ Browser (templates/ + static/)  ──►  FastAPI (main.py, app/routes.py)
 ## Voices
 `app/tts.py` uses Microsoft's free neural Korean voices via the `edge-tts` package (internet needed, no key).
 Change them with env vars in `.env`: `KTALKIE_VOICE_YURI`, `KTALKIE_VOICE_JOOHYUK`
-(options: `ko-KR-SunHiNeural` female, `ko-KR-HyunsuMultilingualNeural` / `ko-KR-InJoonNeural` male).
+(options: `ko-KR-SunHiNeural` female, `ko-KR-InJoonNeural` (default) or `ko-KR-HyunsuMultilingualNeural` male).
 If the voice service can't be reached, the app falls back to the browser's built-in voice.

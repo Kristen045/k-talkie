@@ -154,3 +154,64 @@ button.primary:disabled { opacity: .45; cursor: not-allowed; }
   .panel .log { max-height: 55vh; min-height: 220px; }
 }
 @media (prefers-reduced-motion: reduce) { .stage.talking .face-wrap, .face .mouth, .face .eyes, .bigmic .ring { animation: none !important; } }
+
+/* ========== animation + lip-sync + grammar badges ========== */
+.stage { position: relative; overflow: hidden; isolation: isolate; }
+.stage > * { position: relative; z-index: 1; }
+.blob { position: absolute !important; z-index: 0 !important; border-radius: 50%; filter: blur(48px); opacity: .35; pointer-events: none; }
+.b1 { width: 220px; height: 220px; background: var(--yuri-2); top: -60px; left: -50px; animation: drift1 14s ease-in-out infinite alternate; }
+.b2 { width: 240px; height: 240px; background: var(--joo-2); bottom: -80px; right: -60px; animation: drift2 17s ease-in-out infinite alternate; }
+@keyframes drift1 { to { transform: translate(120px, 90px) scale(1.2); } }
+@keyframes drift2 { to { transform: translate(-110px, -80px) scale(1.15); } }
+
+/* the face reacts to the real audio level (--lvl from 0 to 1) */
+.face-wrap { --lvl: 0; animation: breathe 4s ease-in-out infinite; transition: border-color .2s; }
+@keyframes breathe { 50% { transform: scale(1.025); } }
+.face .mouth { transform: scaleY(calc(.6 + var(--lvl) * 3.6)) scaleX(calc(1 - var(--lvl) * .25)); transition: transform .06s linear; animation: none; }
+.stage.talking .face-wrap { animation: none; transform: scale(calc(1 + var(--lvl) * .04)) translateY(calc(var(--lvl) * -4px));
+  border-color: var(--accent); box-shadow: 0 0 0 calc(4px + var(--lvl) * 18px) color-mix(in srgb, var(--accent) 22%, transparent); }
+.stage.talking.fake .face .mouth { animation: talk .22s ease-in-out infinite alternate; }          /* browser-voice fallback */
+.stage[data-state=listening] .face-wrap { animation: tilt 2.4s ease-in-out infinite; }
+@keyframes tilt { 0%, 100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg) scale(1.02); } }
+.stage[data-state=thinking] .face-wrap { animation: tilt 1.2s ease-in-out infinite; }
+.think { display: flex; gap: 6px; height: 16px; opacity: 0; transition: opacity .2s; }
+.think i { width: 9px; height: 9px; border-radius: 50%; background: var(--warn); animation: bounce 1s infinite; }
+.think i:nth-child(2) { animation-delay: .15s; } .think i:nth-child(3) { animation-delay: .3s; }
+.stage[data-state=thinking] .think, .stage.loading-voice .think { opacity: 1; }
+@keyframes bounce { 50% { transform: translateY(-8px); } }
+
+.wave { width: 100%; max-width: 340px; height: 56px; }
+.captions.pop { animation: pop .35s ease-out; }
+@keyframes pop { from { transform: scale(.97); opacity: .5; } }
+.row { animation: slidein .28s ease-out; }
+@keyframes slidein { from { opacity: 0; transform: translateY(10px); } }
+.bigmic:active { transform: scale(.94); }
+.bigmic { transition: transform .12s, background .2s, box-shadow .2s; }
+
+/* grammar check badges */
+.mycheck { width: 100%; text-align: left; animation: pop .35s ease-out; }
+.mycheck-title { font-size: .75rem; color: var(--muted); margin-bottom: 4px; }
+.check { display: flex; gap: 10px; align-items: flex-start; margin-top: 8px; padding: 8px 10px; border-radius: 12px; font-size: .88rem; text-align: left;
+  background: color-mix(in srgb, var(--c) 12%, var(--card)); border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); color: var(--ink); animation: pop .4s ease-out; }
+.check.good { --c: #2e9e6b; } .check.ok { --c: #d99a1c; } .check.bad { --c: #d9534f; }
+.score { flex: none; min-width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; font-weight: 700; color: #fff; background: var(--c); }
+.check.compact .score { min-width: 32px; height: 32px; font-size: .85rem; }
+.check-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.check-fix { font-family: "Noto Sans KR", sans-serif; font-weight: 600; word-break: keep-all; }
+.check-note, .check-ok { font-family: "Noto Sans Myanmar", "Padauk", "Noto Sans KR", sans-serif; opacity: .9; }
+.row.user .bubble { text-align: left; }
+.row.user .bubble .check { color: var(--ink); }
+.hide-my .check-note { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .blob, .face-wrap, .row, .captions, .check, .think i { animation: none !important; }
+}
+
+/* keep the mic button reachable on shorter screens */
+.stage { overflow-x: hidden; overflow-y: auto; justify-content: flex-start; }
+@media (max-height: 860px) and (min-width: 861px) {
+  .face-wrap { width: 150px; height: 150px; }
+  .captions { min-height: 90px; }
+  .cap-ko { font-size: 1.15rem; }
+  .stage { gap: 8px; padding: 14px; }
+}

@@ -6,7 +6,8 @@ Talk with an AI tutor who speaks **only Korean and Burmese**.
 - **Two tutors:** Yuri (유리) and Joohyuk (주혁)
 - **Three styles:** polite teacher (default), friendly friend, custom role
   (type `now you're a cafe waiter` any time)
-- **Voice-first:** tap the big mic and just talk. The tutor answers out loud, then listens again, hands-free (Chrome/Edge). The text transcript is on the right.
+- **Voice-first:** tap the big mic and just talk. The tutor answers out loud in a natural neural Korean voice (Yuri = female, Joohyuk = male), the face moves its mouth to the real audio, and the text transcript is on the right.
+- **Grammar check:** every sentence you say gets a score (0–100), a corrected version and a short Burmese explanation.
 - **History:** every conversation is saved and can be reopened
 
 ## Run it
@@ -40,3 +41,9 @@ Browser (templates/ + static/)  ──►  FastAPI (main.py, app/routes.py)
 | `app/db.py` | SQLite tables: `conversations`, `messages` |
 | `templates/` | HTML pages (home, chat, history) |
 | `static/` | CSS and JavaScript (`home.js`, `chat.js`) |
+
+## Voices
+`app/tts.py` uses Microsoft's free neural Korean voices via the `edge-tts` package (internet needed, no key).
+Change them with env vars in `.env`: `KTALKIE_VOICE_YURI`, `KTALKIE_VOICE_JOOHYUK`
+(options: `ko-KR-SunHiNeural` female, `ko-KR-HyunsuMultilingualNeural` / `ko-KR-InJoonNeural` male).
+If the voice service can't be reached, the app falls back to the browser's built-in voice.

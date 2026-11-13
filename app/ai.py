@@ -23,7 +23,11 @@ def get_reply(system: str, history: list[dict], tutor: str, mode: str, custom_ro
     """history = [{'role': 'user'|'tutor', 'korean', 'burmese', 'tip'}, ...] oldest first.
     Returns {'korean', 'burmese', 'tip'}."""
     if not is_live():
-        return _demo_reply(history, tutor, mode, custom_role)
+        reply = _demo_reply(history, tutor, mode, custom_role)
+        if history and history[-1]["role"] == "user":
+            from .grammar import demo_check
+            reply["check"] = demo_check(history[-1]["korean"], mode)
+        return reply
     return _live_reply(system, history)
 
 
@@ -41,7 +45,7 @@ def _live_reply(system: str, history: list[dict]) -> dict:
                 {"korean": m["korean"], "burmese": m["burmese"], "tip": m["tip"]}, ensure_ascii=False)})
 
     client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from the environment
-    resp = client.messages.create(model=MODEL, max_tokens=800, system=system, messages=messages)
+    resp = client.messages.create(model=MODEL, max_tokens=900, system=system, messages=messages)
     return _parse(resp.content[0].text)
 
 
@@ -49,9 +53,19 @@ def _parse(text: str) -> dict:
     """The AI should return JSON. If it adds extra words, cut out the {...} part."""
     try:
         data = json.loads(text[text.index("{"): text.rindex("}") + 1])
-        return {"korean": str(data.get("korean", "")).strip(),
-                "burmese": str(data.get("burmese", "")).strip(),
-                "tip": str(data.get("tip", "")).strip()}
+        reply = {"korean": str(data.get("korean", "")).strip(),
+                 "burmese": str(data.get("burmese", "")).strip(),
+                 "tip": str(data.get("tip", "")).strip()}
+        c = data.get("check")
+        if isinstance(c, dict):
+            try:
+                score = max(0, min(100, int(c.get("score"))))
+            except (TypeError, ValueError):
+                score = None
+            if score is not None:
+                reply["check"] = {"score": score, "corrected": str(c.get("corrected") or "").strip(),
+                                  "note": str(c.get("note") or "").strip()}
+        return reply
     except (ValueError, AttributeError):
         return {"korean": text.strip(), "burmese": "", "tip": ""}
 

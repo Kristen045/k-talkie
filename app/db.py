@@ -32,6 +32,9 @@ CREATE TABLE IF NOT EXISTS messages (
     korean          TEXT NOT NULL,             -- what was said (user text, or tutor's Korean)
     burmese         TEXT NOT NULL DEFAULT '',  -- tutor's Burmese explanation
     tip             TEXT NOT NULL DEFAULT '',  -- tutor's correction / tip
+    check_score     INTEGER,                   -- grammar score 0-100 (user messages only)
+    check_corrected TEXT,                      -- corrected sentence, if any
+    check_note      TEXT,                      -- Burmese explanation of the mistake
     created_at      TEXT NOT NULL DEFAULT (datetime('now'))
 );
 """
@@ -54,3 +57,8 @@ def init_db():
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     with get_db() as db:
         db.executescript(SCHEMA)
+        # Older database files lack the grammar columns: add them (a "migration").
+        have = {r["name"] for r in db.execute("PRAGMA table_info(messages)")}
+        for col, ddl in [("check_score", "INTEGER"), ("check_corrected", "TEXT"), ("check_note", "TEXT")]:
+            if col not in have:
+                db.execute(f"ALTER TABLE messages ADD COLUMN {col} {ddl}")

@@ -2,11 +2,11 @@
 import re
 
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
-from . import ai
+from . import ai, tts
 from .db import get_db
 from .tutor import MODES, TUTORS, build_system_prompt
 
@@ -89,6 +89,10 @@ def _tutor_reply(conv, history: list[dict]) -> dict:
             "INSERT INTO messages (conversation_id, role, korean, burmese, tip) VALUES (?, 'tutor', ?, ?, ?)",
             (conv["id"], reply["korean"], reply["burmese"], reply["tip"]))
         row = db.execute("SELECT * FROM messages WHERE id = ?", (cur.lastrowid,)).fetchone()
+        check = reply.get("check")                       # grammar check of the learner's last message
+        if check and history and history[-1]["role"] == "user":
+            db.execute("UPDATE messages SET check_score = ?, check_corrected = ?, check_note = ? WHERE id = ?",
+                       (check["score"], check["corrected"], check["note"], history[-1]["id"]))
     return dict(row)
 
 
@@ -99,6 +103,19 @@ def _validate_mode(mode: str, custom_role: str | None) -> str | None:
     if mode == "custom" and not role:
         raise HTTPException(400, "Please type a role, e.g. cafe waiter")
     return role if mode == "custom" else None
+
+
+@router.get("/api/tts")
+async def speak(tutor: str, text: str):
+    """Turn a sentence into natural Korean speech (MP3)."""
+    text = text.strip()[:600]
+    if tutor not in TUTORS or not text:
+        raise HTTPException(400, "Bad request")
+    try:
+        path = await tts.synthesize(text, tutor)
+    except Exception as e:
+        raise HTTPException(503, f"Voice service unavailable ({type(e).__name__})")
+    return FileResponse(path, media_type="audio/mpeg", headers={"Cache-Control": "public, max-age=86400"})
 
 
 @router.get("/api/status")
@@ -146,6 +163,8 @@ def send_message(conv_id: int, body: NewMessage):
                          (conv_id, text))
         user_row = db.execute("SELECT * FROM messages WHERE id = ?", (cur.lastrowid,)).fetchone()
     reply = _tutor_reply(conv, _messages(conv_id))
+    with get_db() as db:  # re-read the user's message: it now has its grammar check
+        user_row = db.execute("SELECT * FROM messages WHERE id = ?", (user_row["id"],)).fetchone()
     return {"user": dict(user_row), "tutor": reply,
             "mode": conv["mode"], "custom_role": conv["custom_role"], "mode_changed": mode_changed}
 

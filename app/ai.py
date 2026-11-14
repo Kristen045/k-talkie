@@ -37,16 +37,34 @@ def _live_reply(system: str, history: list[dict]) -> dict:
 
     # Claude wants the chat to start with a 'user' message, so we add a hidden one.
     messages = [{"role": "user", "content": START_MESSAGE}]
+    last_check = None   # grammar check of the learner's latest message, shown to the model with the tutor's reply
     for m in history[-20:]:  # only the last 20 messages: cheaper and faster
         if m["role"] == "user":
             messages.append({"role": "user", "content": m["korean"]})
+            last_check = None
+            if m.get("check_score") is not None:
+                last_check = {"score": m["check_score"], "corrected": m.get("check_corrected") or "",
+                              "note": m.get("check_note") or "", "burmese": m.get("burmese") or ""}
         else:
+            # keep the SAME JSON shape in the history, including "check", so the model keeps answering in that shape
             messages.append({"role": "assistant", "content": json.dumps(
-                {"korean": m["korean"], "burmese": m["burmese"], "tip": m["tip"]}, ensure_ascii=False)})
+                {"korean": m["korean"], "burmese": m["burmese"], "tip": m["tip"], "check": last_check},
+                ensure_ascii=False)})
+            last_check = None
 
     client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from the environment
-    resp = client.messages.create(model=MODEL, max_tokens=900, system=system, messages=messages)
-    return _parse(resp.content[0].text)
+    resp = client.messages.create(
+        model=MODEL,
+        max_tokens=2000,                       # room for the (hidden) thinking AND the JSON answer
+        output_config={"effort": "low"},       # a chat tutor needs speed and a low bill, not deep reasoning
+        system=system,
+        messages=messages,
+    )
+    # The first block may be a "thinking" block, so take the first TEXT block instead of content[0].
+    text = next((b.text for b in resp.content if getattr(b, "type", "") == "text"), "")
+    if not text:   # e.g. the safety system declined, or the answer was cut off
+        return {"korean": "죄송해요, 다시 한번 말해 주세요.", "burmese": "ဆောရီးပါ၊ တစ်ခါပြန်ပြောပေးပါ။", "tip": ""}
+    return _parse(text)
 
 
 def _parse(text: str) -> dict:

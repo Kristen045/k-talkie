@@ -95,6 +95,9 @@ def _casual_ending(word: str) -> bool:
     return len(word) >= 3 and word.endswith("해") and word not in NOUNS_ENDING_HAE        # 좋아해, 공부해
 
 
+NOT_A_PARTICLE = {"나이", "차이", "나은", "나을", "저이", "너이", "방이", "형이", "물이"} - {"방이", "형이", "물이"}
+
+
 PARTICLES = {"은": ("은", "는"), "는": ("은", "는"), "이": ("이", "가"), "가": ("이", "가"),
              "을": ("을", "를"), "를": ("을", "를")}
 
@@ -116,6 +119,8 @@ def demo_check(text: str, mode: str) -> dict:
 
     def fix_particle(m):
         stem, part = m.group(1), m.group(2)
+        if stem + part in NOT_A_PARTICLE:          # real words that only LOOK like noun + particle (나이 = age ...)
+            return m.group(0)
         want = PARTICLES[part][1 if not has_batchim(stem[-1]) else 0]
         if want != part:
             notes.append(f"'{stem}' ရဲ့နောက်မှာ '{want}' သုံးရပါမယ် (받침 {'ရှိ' if has_batchim(stem[-1]) else 'မရှိ'}လို့ပါ)။")

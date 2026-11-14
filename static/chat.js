@@ -315,6 +315,12 @@ if (!SR) {
     else if (call) setTimeout(listen, 250);
   };
 }
+// Voice recognition is only reliable in Chrome / Edge. Warn clearly in other browsers (Safari, Firefox).
+if (!/Chrome|Chromium|Edg\//.test(navigator.userAgent)) {
+  const h = $('#mic-hint');
+  h.textContent = '⚠️ For voice, open this page in Google Chrome (Safari does not recognize Korean speech well). Typing works everywhere.';
+  h.hidden = false;
+}
 function listen() {
   if (!call || !rec) return;
   heard = ''; $('#live').textContent = ''; setState('listening');

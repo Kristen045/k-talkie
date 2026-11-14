@@ -233,3 +233,13 @@
 .tutor-tile.yuri, .tutor-tile.joohyuk { background: #e9b778; }
 .tutor-tile .face-wrap, .tutor-tile .orb-wrap { z-index: 2; }
 .face-wrap.has-rig { filter: drop-shadow(0 4px 5px rgba(60, 30, 10, .25)); }
+
+/* ===== Safari / any browser safety: give the grid a definite row and the boxes a minimum size ===== */
+.chat { height: calc(100vh - 58px); height: calc(100dvh - 58px); min-height: 620px; grid-template-rows: minmax(0, 1fr); align-items: stretch; }
+.call { min-height: 0; height: 100%; }
+.tutor-tile { min-height: 270px; }
+.cam-tile { min-height: 160px; }
+.panel { min-height: 0; height: 100%; }
+.log { min-height: 160px; }
+.summary[hidden] { display: none !important; }
+@media (max-width: 860px) { .chat { height: auto; min-height: 0; grid-template-rows: none; } .call, .panel { height: auto; } }

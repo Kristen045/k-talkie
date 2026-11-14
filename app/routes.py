@@ -1,5 +1,6 @@
 """The URLs of the app. Pages (HTML) and the API (JSON the browser asks for)."""
 import json
+import os
 import re
 
 from fastapi import APIRouter, HTTPException, Request
@@ -27,7 +28,10 @@ def _custom_rigs() -> dict:
     Made by tools/make_puppet.py into static/tutors/<tutor>/ (or static/characters/<tutor>/ as your own override)."""
     rigs = {}
     for key in TUTORS:
-        for base, url in ((CHAR_DIR, "/static/characters"), (TUTOR_DIR, "/static/tutors")):
+        sources = [(TUTOR_DIR, "/static/tutors")]                   # the latest tutors always win ...
+        if os.getenv("KTALKIE_ART") == "custom":                    # ... unless you opt in to your own folder
+            sources.insert(0, (CHAR_DIR, "/static/characters"))
+        for base, url in sources:
             f = base / key / "rig.json"
             if not f.exists():
                 continue

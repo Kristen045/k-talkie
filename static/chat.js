@@ -84,7 +84,7 @@ function renderCheck(c, original) {
   const box = el('div', 'check ' + scoreClass(c.score));
   box.append(el('span', 'score', String(c.score)));
   const body = el('div', 'check-body');
-  if (c.score >= 100) body.append(el('div', 'line', '✅ 완벽해요! · ပြည့်စုံပါတယ်'));
+  if (c.score >= 100) { body.append(el('div', 'line', '✅ 완벽해요! · ပြည့်စုံပါတယ်')); if (c.note) body.append(el('div', 'check-note', 'ℹ️ ' + c.note)); }
   else {
     if (c.corrected) {
       const [wa, wb] = diffWords(original, c.corrected);

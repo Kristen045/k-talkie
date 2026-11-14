@@ -12,7 +12,10 @@ import re
 
 HANGUL = re.compile(r"[가-힣]")
 NOUNS = ["한국어", "한국", "학생", "친구", "선생님", "커피", "김치", "음식", "물", "밥", "학교", "집",
-         "사람", "영화", "책", "이름", "미얀마", "음악", "사과", "카페", "저", "나", "너"]
+         "사람", "영화", "책", "이름", "미얀마", "음악", "사과", "카페", "저", "나", "너", "우유", "빵", "과일", "주스",
+         "차", "버스", "지하철", "회사", "병원", "도서관", "식당", "공원", "가족", "엄마", "아빠", "동생", "형", "누나",
+         "언니", "오빠", "서울", "양곤", "날씨", "시간", "주말", "생일", "선물", "노래", "운동", "여행", "영어",
+         "숙제", "전화", "핸드폰", "컴퓨터", "방", "옷", "신발", "가방", "도시", "나라", "시험", "수업", "공부"]
 TYPOS = {"안녕하세여": "안녕하세요", "괜찬아요": "괜찮아요", "감사함니다": "감사합니다",
          "고맙슴니다": "고맙습니다", "잘지내요": "잘 지내요"}
 PRESENT_CASUAL = {"먹어", "좋아", "있어", "없어", "알아", "몰라", "싫어", "괜찮아", "재밌어", "맛있어", "바빠", "예뻐"}
@@ -23,6 +26,24 @@ PAST = {"만나": "만났", "가": "갔", "와": "왔", "먹어": "먹었", "마
         "자": "잤", "놀아": "놀았", "읽어": "읽었", "써": "썼", "있어": "있었", "배워": "배웠", "보내": "보냈",
         "만들어": "만들었", "들어": "들었", "일해": "일했", "공부해": "공부했", "운동해": "운동했", "요리해": "요리했"}
 PAST_WORDS = ("어제", "지난주", "지난달", "작년", "아까")
+FUTURE_WORDS = ("내일", "모레", "다음 주", "다음주", "다음 달")
+DEMO_NOTE = ("Demo checker: it only knows a few common mistakes. Add an API key for full grammar checking. · "
+             "API key ထည့်ရင် သဒ္ဒါကို အပြည့်အဝ စစ်ပေးပါမယ်။")
+
+
+def _to_present(word: str):
+    """'만났어요' -> '만나요' (used when a future word like 내일 meets a past-tense verb)."""
+    polite = word.endswith("요")
+    core = word[:-1] if polite else word
+    if not core.endswith("어") or len(core) < 2:
+        return None
+    past = core[:-1]
+    for present, pst in PAST.items():
+        if pst == past:
+            return present + ("요" if polite else "")
+    if past.endswith("했"):
+        return past[:-1] + "해" + ("요" if polite else "")
+    return None
 
 
 def _to_past(word: str):
@@ -110,6 +131,37 @@ def demo_check(text: str, mode: str) -> dict:
             corrected = " ".join(words[:-1] + [fixed]) + tail
             notes.append("'어제' (မနေ့က) လိုမျိုး အတိတ်ကို ပြောရင် ကြိယာကို အတိတ် '-았/었어요' ပုံစံ သုံးပါ။ (만나요 → 만났어요)")
 
+    # 내일 (tomorrow) + a past-tense verb
+    if any(w in corrected for w in FUTURE_WORDS):
+        words = corrected.rstrip(" .!?").split(" ")
+        fixed = _to_present(words[-1]) if words else None
+        if fixed:
+            tail = corrected[len(corrected.rstrip(" .!?")):]
+            corrected = " ".join(words[:-1] + [fixed]) + tail
+            notes.append("'내일' (မနက်ဖြန်) လိုမျိုး နောင်အနာဂတ်ကို ပြောရင် အတိတ် '-았/었어요' မသုံးပါနဲ့။ (갔어요 → 가요 / 갈 거예요)")
+
+    # 이에요 / 예요 depends on the final consonant (받침)
+    def fix_copula(m):
+        stem, suf = m.group(1), m.group(2)
+        if stem in ("아니", "이"):
+            return m.group(0)
+        if suf == "예요" and has_batchim(stem[-1]):
+            notes.append(f"'{stem}' မှာ 받침 ရှိလို့ '이에요' သုံးပါ။ ('{stem}이에요')")
+            return stem + "이에요"
+        if suf == "이에요" and not has_batchim(stem[-1]):
+            notes.append(f"'{stem}' မှာ 받침 မရှိလို့ '예요' သုံးပါ။ ('{stem}예요')")
+            return stem + "예요"
+        return m.group(0)
+    corrected = re.sub(r"(?<![가-힣])([가-힣]+?)(이에요|예요)(?![가-힣])", fix_copula, corrected)
+
+    # with a teacher: 나/내가 -> 저/제가 (polite)
+    if mode == "teacher":
+        for casual, polite in (("나는", "저는"), ("내가", "제가"), ("나도", "저도"), ("나를", "저를"), ("내 ", "제 ")):
+            if re.search(r"(?<![가-힣])" + re.escape(casual), corrected):
+                corrected = re.sub(r"(?<![가-힣])" + re.escape(casual), polite, corrected)
+                notes.append("ဆရာနဲ့ ပြောရင် '나/내' အစား ယဉ်ကျေးတဲ့ '저/제' (ကျွန်တော်/ကျွန်မ) ကို သုံးပါ။")
+                break
+
     if mode == "teacher":
         words = corrected.rstrip(" .!?").split(" ")
         last = words[-1] if words else ""
@@ -124,6 +176,6 @@ def demo_check(text: str, mode: str) -> dict:
             notes.append("ဆရာနဲ့ ပြောရင် ယဉ်ကျေးတဲ့ '-요' ပုံစံ သုံးပါ (반말 မဟုတ်ဘဲ 존댓말)။")
 
     if not notes:
-        return {"score": 100, "corrected": "", "note": "", "burmese": _translate(text)}
+        return {"score": 100, "corrected": "", "note": DEMO_NOTE, "burmese": _translate(text)}
     return {"score": max(55, 100 - 15 * len(notes)), "corrected": corrected, "note": " ".join(notes),
             "burmese": _translate(corrected)}

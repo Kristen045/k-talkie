@@ -1,3 +1,6 @@
+NOTE: files here are IGNORED by default now (the latest tutors in static/tutors always win).
+To use your own folder anyway, add KTALKIE_ART=custom to your .env file.
+
 NOTE: the app now shows its own front-facing cartoon tutors by default (they look straight at you, move their
 mouth with the voice, blink, nod and gesture with their hands).
 Files/folders in here OVERRIDE them. If you unzipped picture puppets (yuri/ or joohyuk/ folders, yuri.png...)
